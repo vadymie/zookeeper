@@ -18,3 +18,4 @@ ZooKeeper.Profiled/obj
 ZooKeeper.Profiled/bin
 *.vsp
 *.7z
+packages/

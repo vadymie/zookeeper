@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ZooKeeperSharp</id>
+    <version>3.4.6.0</version>
+    <authors>Warren Falk</authors>
+    <owners>Warren Falk</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Zookeeper Client for C# from github.com/warrenfalk/zookeeper</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>Zookeeper</tags>
+    <dependencies>
+      <dependency id="log4net" version="2.0.5" />
+    </dependencies>
+  </metadata>
+</package>
