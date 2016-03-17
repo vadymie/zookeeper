@@ -195,7 +195,7 @@
 
             public bool IsAlive()
             {
-                return this != CLOSED && this != AUTH_FAILED;
+                return !Equals(this, CLOSED) && !Equals(this, AUTH_FAILED);
             }
 
             public bool Equals(States other)
