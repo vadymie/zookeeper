@@ -15,7 +15,7 @@ namespace ZooKeeperNet
     using Org.Apache.Jute;
     using Org.Apache.Zookeeper.Proto;
     using System.Collections.Generic;
-
+    using System.Diagnostics;
     public class ClientConnectionRequestProducer : IStartable, IDisposable
     {
         private static readonly ILog LOG = LogManager.GetLogger(typeof(ClientConnectionRequestProducer));
@@ -123,15 +123,17 @@ namespace ZooKeeperNet
 
         private void SendRequests()
         {
-            DateTime now = DateTime.UtcNow;
-            DateTime lastSend = now;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            long nowMs = sw.ElapsedMilliseconds;
+            long lastSendMs = nowMs;
             Packet packet = null;
 
             while (zooKeeper.State.IsAlive())
             {
                 try
                 {
-                    now = DateTime.UtcNow;
+                    nowMs = sw.ElapsedMilliseconds;
                     if ((client == null || client.Client == null) || (!client.Connected || zooKeeper.State == ZooKeeper.States.NOT_CONNECTED))
                     {
                         // don't re-establish connection if we are closing
@@ -139,14 +141,16 @@ namespace ZooKeeperNet
                             break;
 
                         StartConnect();
-                        lastSend = now;
+                        lastSendMs = nowMs;
                     }
-                    TimeSpan idleSend = now - lastSend;
+                    var idleSendMs = nowMs - lastSendMs;
+                    var msToNextPing = (long)(conn.readTimeout.TotalMilliseconds / 2) - idleSendMs;
                     if (zooKeeper.State == ZooKeeper.States.CONNECTED)
                     {
-                        TimeSpan timeToNextPing = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(conn.readTimeout.TotalMilliseconds / 2 - idleSend.TotalMilliseconds));
-                        if (timeToNextPing <= TimeSpan.Zero)
+                        if (msToNextPing <= 0)
+                        {
                             SendPing();
+                        }
                     }
                     // Everything below and until we get back to the select is
                     // non blocking, so time is effectively a constant. That is
@@ -166,11 +170,11 @@ namespace ZooKeeperNet
                         // We have something to send so it's the same
                         // as if we do the send now.                        
                         DoSend(packet);
-                        lastSend = DateTime.UtcNow;
+                        lastSendMs = sw.ElapsedMilliseconds;
                         packet = null;
                     }
                     else
-                        packetAre.WaitOne(TimeSpan.FromMilliseconds(1));
+                        packetAre.WaitOne(TimeSpan.FromMilliseconds(Math.Min(msToNextPing, 100)));
                 }
                 catch (Exception e)
                 {
@@ -252,6 +256,7 @@ namespace ZooKeeperNet
         {
             Cleanup(client);
             client = null;
+            packetAre.Set();
         }
 
         private void StartConnect()
