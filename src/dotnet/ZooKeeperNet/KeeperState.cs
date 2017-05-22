@@ -15,14 +15,14 @@
  *  limitations under the License.
  *
  */
-﻿namespace ZooKeeperNet
+namespace ZooKeeperNet
 {
-    public enum KeeperState
-    {
-        Unknown = -1,
-        Disconnected = 0,
-        NoSyncConnected = 1,
-        SyncConnected = 3,
-        Expired = -112
-    }
+	public enum KeeperState
+	{
+		Disconnected = 0,
+		SyncConnected = 3,
+		//AuthFailed = 4,
+		//ConnectedReadOnly = 5,
+		Expired = -112
+	}
 }
