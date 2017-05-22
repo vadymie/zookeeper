@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
 
     public class WriteLock : ProtocolSupport
     {

@@ -18,7 +18,7 @@
 ﻿namespace ZooKeeperNet
 {
     using System.Collections.Generic;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
 
     public sealed class Ids
     {

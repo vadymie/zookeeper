@@ -104,7 +104,7 @@ namespace ZooKeeperNet
          * @param zookeeper the client
          * @param path      path to ensure
          * @throws InterruptedException thread interruption
-         * @throws org.apache.zookeeper.KeeperException
+         * @throws ZooKeeperNet.KeeperException
          *                              Zookeeper errors
          */
         public static void Mkdirs(ZooKeeper zookeeper, String path)
@@ -120,7 +120,7 @@ namespace ZooKeeperNet
          * @param path      path to ensure
          * @param makeLastNode if true, all nodes are created. If false, only the parent nodes are created
          * @throws InterruptedException thread interruption
-         * @throws org.apache.zookeeper.KeeperException
+         * @throws ZooKeeperNet.KeeperException
          *                              Zookeeper errors
          */
         public static void Mkdirs(IZooKeeper zookeeper, String path, bool makeLastNode)
@@ -168,7 +168,7 @@ namespace ZooKeeperNet
          * @param path      the path
          * @return sorted list of children
          * @throws InterruptedException thread interruption
-         * @throws org.apache.zookeeper.KeeperException
+         * @throws ZooKeeperNet.KeeperException
          *                              zookeeper errors
          */
         public static List<String> GetSortedChildren(IZooKeeper zookeeper, String path)

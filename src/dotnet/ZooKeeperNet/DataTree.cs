@@ -21,8 +21,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using NLog;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Jute;
+    using ZooKeeperNet.Data;
     using System.Text;
     using System.Collections.Concurrent;
     using System.Threading;

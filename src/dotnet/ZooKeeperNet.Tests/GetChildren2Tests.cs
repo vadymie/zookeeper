@@ -21,7 +21,7 @@ namespace ZooKeeperNet.Tests
     using System.Collections.Generic;
     using System.Linq;
     using NUnit.Framework;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
 
     [TestFixture]
     public class GetChildren2Tests : AbstractZooKeeperTests

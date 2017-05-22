@@ -19,7 +19,7 @@ using System;
 using System.Threading;
 using NLog;
 using NUnit.Framework;
-using Org.Apache.Zookeeper.Data;
+using ZooKeeperNet.Data;
 
 namespace ZooKeeperNet.Tests
 {

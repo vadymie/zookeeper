@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Threading;
     using NLog;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
 
 
     public class DistributedQueue

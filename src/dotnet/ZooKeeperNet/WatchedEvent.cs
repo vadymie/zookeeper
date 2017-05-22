@@ -18,7 +18,7 @@
 ﻿namespace ZooKeeperNet
 {
     using System;
-    using Org.Apache.Zookeeper.Proto;
+    using ZooKeeperNet.Proto;
     using System.Text;
 
     public class WatchedEvent

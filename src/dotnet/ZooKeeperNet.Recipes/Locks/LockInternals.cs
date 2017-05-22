@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Org.Apache.Zookeeper.Data;
+using ZooKeeperNet.Data;
 
 namespace ZooKeeperNet.Recipes.Locks
 {

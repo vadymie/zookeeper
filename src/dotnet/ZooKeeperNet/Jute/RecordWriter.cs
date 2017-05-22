@@ -17,7 +17,7 @@
  */
 using ZooKeeperNet.IO;
 
-namespace Org.Apache.Jute
+namespace ZooKeeperNet.Jute
 {
     public class RecordWriter
     {

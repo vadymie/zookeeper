@@ -24,8 +24,8 @@
     using System.IO;
     using System.Runtime.CompilerServices;
     using NLog;
-    using Org.Apache.Zookeeper.Data;
-    using Org.Apache.Zookeeper.Proto;
+    using ZooKeeperNet.Data;
+    using ZooKeeperNet.Proto;
     using System.Threading;
     using System.Text;
 
@@ -794,7 +794,7 @@
         /// @return the stat of the node.
         /// @throws InterruptedException If the server transaction is interrupted.
         /// @throws KeeperException If the server signals an error with a non-zero error code.
-        /// @throws org.apache.zookeeper.KeeperException.InvalidACLException If the acl is invalide.
+        /// @throws ZooKeeperNet.KeeperException.InvalidACLException If the acl is invalide.
         /// @throws IllegalArgumentException if an invalid path is specified
         /// </summary>
         public Stat SetACL(string path, IEnumerable<ACL> acl, int version)

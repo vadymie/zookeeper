@@ -23,7 +23,7 @@ namespace ZooKeeperNet.Tests
     using System.Collections.Generic;
     using NLog;
     using NUnit.Framework;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
 
     [TestFixture]
     public class ZooKeeperEndPointTests : AbstractZooKeeperTests

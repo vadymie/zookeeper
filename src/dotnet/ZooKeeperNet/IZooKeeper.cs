@@ -19,7 +19,7 @@ namespace ZooKeeperNet
 {
     using System;
     using System.Collections.Generic;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
 
     public interface IZooKeeper
     {
@@ -276,7 +276,7 @@ namespace ZooKeeperNet
         /// @return the stat of the node.
         /// @throws InterruptedException If the server transaction is interrupted.
         /// @throws KeeperException If the server signals an error with a non-zero error code.
-        /// @throws org.apache.zookeeper.KeeperException.InvalidACLException If the acl is invalide.
+        /// @throws ZooKeeperNet.KeeperException.InvalidACLException If the acl is invalide.
         /// @throws IllegalArgumentException if an invalid path is specified
         /// </summary>
         Stat SetACL(string path, IEnumerable<ACL> acl, int version);

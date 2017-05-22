@@ -18,8 +18,8 @@
 namespace ZooKeeperNet
 {
     using System;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Proto;
+    using ZooKeeperNet.Jute;
+    using ZooKeeperNet.Proto;
 
     public interface IClientConnection : IStartable, IDisposable
     {

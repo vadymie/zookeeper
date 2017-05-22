@@ -12,8 +12,8 @@ namespace ZooKeeperNet
     using System.Text;
     using System.Threading;
     using NLog;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Proto;
+    using ZooKeeperNet.Jute;
+    using ZooKeeperNet.Proto;
     using System.Collections.Generic;
     using System.Diagnostics;
     public class ClientConnectionRequestProducer : IStartable, IDisposable

@@ -19,7 +19,7 @@ namespace ZooKeeperNet.Tests
 {
     using System;
     using NUnit.Framework;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
     using System.Threading;
 
     [TestFixture]

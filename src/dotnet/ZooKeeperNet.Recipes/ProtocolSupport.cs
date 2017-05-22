@@ -5,7 +5,7 @@
     using System.Text;
     using System.Threading;
     using NLog;
-    using Org.Apache.Zookeeper.Data;
+    using ZooKeeperNet.Data;
  
     public abstract class ProtocolSupport : IDisposable
     {

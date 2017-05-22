@@ -26,8 +26,8 @@ namespace ZooKeeperNet
     using System.Text;
     using System.Threading;
     using NLog;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Proto;
+    using ZooKeeperNet.Jute;
+    using ZooKeeperNet.Proto;
 
     public class ClientConnection : IClientConnection
     {
