@@ -320,8 +320,6 @@ namespace ZooKeeperNet
 
                     tempClient.EndConnect(ar);
 
-                    zkEndpoints.CurrentEndPoint.SetAsSuccess();
-
                     break;
                 }
                 catch (Exception ex)
@@ -395,7 +393,10 @@ namespace ZooKeeperNet
                 if (len == 0) //server closed the connection...
                 {
                     LOG.Debug("TcpClient connection lost.");
-                    zooKeeper.State = ZooKeeper.States.NOT_CONNECTED;
+					if (zooKeeper.State == ZooKeeper.States.CONNECTING)
+						zkEndpoints.CurrentEndPoint.SetAsFailure();
+
+					zooKeeper.State = ZooKeeper.States.NOT_CONNECTED;
                     IsConnectionClosedByServer = true;
                     return;
                 }
@@ -512,7 +513,8 @@ namespace ZooKeeperNet
         {
             using (var reader = new EndianBinaryReader(EndianBitConverter.Big, new MemoryStream(content), Encoding.UTF8))
             {
-                BinaryInputArchive bbia = BinaryInputArchive.GetArchive(reader);
+				zkEndpoints.CurrentEndPoint.SetAsSuccess();
+				BinaryInputArchive bbia = BinaryInputArchive.GetArchive(reader);
                 ConnectResponse conRsp = new ConnectResponse();
                 conRsp.Deserialize(bbia, "connect");
                 negotiatedSessionTimeout = conRsp.TimeOut;
@@ -654,7 +656,9 @@ namespace ZooKeeperNet
                 {
                     if (requestThread.IsAlive)
                     {
-                        requestThread.Join();
+						// wake up the requests thread, it might be sleeping and waiting for packets
+						packetAre.Set();
+						requestThread.Join();
                     } 
                 }
                 catch (Exception ex)
