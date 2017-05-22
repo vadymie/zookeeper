@@ -19,14 +19,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using Common.Logging;
+    using NLog;
     using System.Text;
     using System.Collections.Concurrent;
     using System.Threading;
 
     public class ZKWatchManager : IClientWatchManager 
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ZKWatchManager));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ZKWatchManager));
 
         internal readonly ConcurrentDictionary<string, HashSet<IWatcher>> dataWatches = new ConcurrentDictionary<string, HashSet<IWatcher>>();
         internal readonly ConcurrentDictionary<string, HashSet<IWatcher>> existWatches = new ConcurrentDictionary<string, HashSet<IWatcher>>();

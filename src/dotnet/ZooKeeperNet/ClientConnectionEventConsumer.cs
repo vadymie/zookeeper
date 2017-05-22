@@ -20,13 +20,13 @@
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-    using Common.Logging;
+	using NLog;
     using System.Text;
     using System.Collections.Generic;
 
     public class ClientConnectionEventConsumer : IStartable, IDisposable
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ClientConnectionEventConsumer));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ClientConnectionEventConsumer));
 
         private readonly ClientConnection conn;
         private readonly Thread eventThread;
@@ -137,7 +137,7 @@
                 }
                 catch (Exception ex)
                 {
-                    LOG.WarnFormat("Error disposing {0} : {1}", this.GetType().FullName, ex.Message);
+                    LOG.Warn(string.Format("Error disposing {0} : {1}", this.GetType().FullName, ex.Message));
                 }
             }
         }

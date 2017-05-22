@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Proto
 {
 public class MultiHeader : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(MultiHeader));
+private static Logger log = LogManager.GetLogger(nameof(MultiHeader));
   public MultiHeader() {
   }
   public MultiHeader(

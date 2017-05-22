@@ -23,14 +23,14 @@
     using System.Linq;
     using System.Text;
     using System.Threading;
-    using Common.Logging;
+    using NLog;
     using NUnit.Framework;
     using Org.Apache.Zookeeper.Data;
 
     [TestFixture]
     public class ClientTests : AbstractZooKeeperTests
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ClientTests));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ClientTests));
 
         /** Verify that pings are sent, keeping the "idle" client alive */
         [Test]

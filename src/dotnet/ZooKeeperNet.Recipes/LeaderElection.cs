@@ -59,7 +59,7 @@ namespace ZooKeeperNet.Recipes {
 				if (name.StartsWith(prefix)) {
 					id = name;
 					if (LOG.IsDebugEnabled) {
-						LOG.DebugFormat("Found id created last time: {0}", id);
+						LOG.Debug(string.Format("Found id created last time: {0}", id));
 					}
 				}
 			}
@@ -68,7 +68,7 @@ namespace ZooKeeperNet.Recipes {
 				id = Zookeeper.Create(path.Combine(prefix), data, Acl, CreateMode.EphemeralSequential);
 
 				if (LOG.IsDebugEnabled) {
-					LOG.DebugFormat("Created id: {0}", id);
+					LOG.Debug(string.Format("Created id: {0}", id));
 				}
 			}
 

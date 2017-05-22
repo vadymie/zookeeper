@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Server.Quorum
 {
 public class LearnerInfo : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(LearnerInfo));
+private static Logger log = LogManager.GetLogger(nameof(LearnerInfo));
   public LearnerInfo() {
   }
   public LearnerInfo(

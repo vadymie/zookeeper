@@ -11,14 +11,14 @@ namespace ZooKeeperNet
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;
-    using Common.Logging;
+    using NLog;
     using Org.Apache.Jute;
     using Org.Apache.Zookeeper.Proto;
     using System.Collections.Generic;
     using System.Diagnostics;
     public class ClientConnectionRequestProducer : IStartable, IDisposable
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ClientConnectionRequestProducer));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ClientConnectionRequestProducer));
         private const string RETRY_CONN_MSG = ", closing socket connection and attempting reconnect";
 
         private readonly ClientConnection conn;
@@ -94,7 +94,7 @@ namespace ZooKeeperNet
             if (!zooKeeper.State.IsAlive() || closing || Interlocked.CompareExchange(ref isDisposed, 0, 0) == 1)
             {
                 if(LOG.IsDebugEnabled)
-                    LOG.DebugFormat("Connection closing. Sending ConLossPacket. IsAlive: {0}, closing: {1}", zooKeeper.State.IsAlive(), closing);
+                    LOG.Debug(string.Format("Connection closing. Sending ConLossPacket. IsAlive: {0}, closing: {1}", zooKeeper.State.IsAlive(), closing));
                 ConLossPacket(p);
             }
             else
@@ -182,8 +182,8 @@ namespace ZooKeeperNet
                     {
                         if (LOG.IsDebugEnabled)
                         {
-                            // closing so this is expected
-                            LOG.DebugFormat("An exception was thrown while closing send thread for session 0x{0:X} : {1}", conn.SessionId, e.Message);
+							// closing so this is expected
+							LOG.Debug(string.Format("An exception was thrown while closing send thread for session 0x{0:X} : {1}", conn.SessionId, e.Message));
                         }
                         break;
                     }
@@ -191,13 +191,13 @@ namespace ZooKeeperNet
                     {
                         // this is ugly, you have a better way speak up
                         if (e is KeeperException.SessionExpiredException)
-                            LOG.InfoFormat("{0}, closing socket connection", e.Message);
+                            LOG.Info(string.Format("{0}, closing socket connection", e.Message));
                         else if (e is SessionTimeoutException)
-                            LOG.InfoFormat("{0}{1}", e.Message, RETRY_CONN_MSG);
+							LOG.Info(string.Format("{0}{1}", e.Message, RETRY_CONN_MSG));
                         else if (e is System.IO.EndOfStreamException)
-                            LOG.InfoFormat("{0}{1}", e.Message, RETRY_CONN_MSG);
+							LOG.Info(string.Format("{0}{1}", e.Message, RETRY_CONN_MSG));
                         else
-                            LOG.InfoFormat("Session 0x{0:X} for server {1}, unexpected error{2}, detail:{3}-{4}", conn.SessionId, null, RETRY_CONN_MSG, e.Message, e.StackTrace);
+							LOG.Info(string.Format("Session 0x{0:X} for server {1}, unexpected error{2}, detail:{3}-{4}", conn.SessionId, null, RETRY_CONN_MSG, e.Message, e.StackTrace));
                         // a safe-net ...there's a packet about to send when an exception happen
                         if (packet != null)
                             ConLossPacket(packet);
@@ -295,7 +295,7 @@ namespace ZooKeeperNet
                 zkEndpoints.GetNextAvailableEndpoint();
 
                 Cleanup(tempClient);
-                LOG.InfoFormat("Opening socket connection to server {0}", zkEndpoints.CurrentEndPoint.ServerAddress);
+				LOG.Info(string.Format("Opening socket connection to server {0}", zkEndpoints.CurrentEndPoint.ServerAddress));
                 tempClient = new TcpClient();
                 tempClient.LingerState = new LingerOption(false, 0);
                 tempClient.NoDelay = true; 
@@ -332,9 +332,9 @@ namespace ZooKeeperNet
                         tempClient = null;
                         zkEndpoints.CurrentEndPoint.SetAsFailure();
 
-                        LOG.WarnFormat(string.Format("Failed to connect to {0}:{1}.",
+						LOG.Warn(string.Format(string.Format("Failed to connect to {0}:{1}.",
                             zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString(),
-                            zkEndpoints.CurrentEndPoint.ServerAddress.Port.ToString()));
+                            zkEndpoints.CurrentEndPoint.ServerAddress.Port.ToString())));
                     }
                     else
                     {
@@ -443,7 +443,7 @@ namespace ZooKeeperNet
 
         private void PrimeConnection()
         {
-            LOG.InfoFormat("Socket connection established to {0}, initiating session", client.Client.RemoteEndPoint);
+			LOG.Info(string.Format("Socket connection established to {0}, initiating session", client.Client.RemoteEndPoint));
             ConnectRequest conReq = new ConnectRequest(0, lastZxid, Convert.ToInt32(conn.SessionTimeout.TotalMilliseconds), conn.SessionId, conn.SessionPassword);
 
             lock (outgoingQueue)
@@ -468,7 +468,7 @@ namespace ZooKeeperNet
             }
             packetAre.Set();
             if (LOG.IsDebugEnabled)
-                LOG.DebugFormat("Session establishment request sent on {0}",client.Client.RemoteEndPoint);
+				LOG.Debug(string.Format("Session establishment request sent on {0}",client.Client.RemoteEndPoint));
         }
 
         private void SendPing()
@@ -528,7 +528,7 @@ namespace ZooKeeperNet
                 conn.SessionId = conRsp.SessionId;
                 conn.SessionPassword = conRsp.Passwd;
                 zooKeeper.State = ZooKeeper.States.CONNECTED;
-                LOG.InfoFormat("Session establishment complete on server {0:X}, negotiated timeout = {1}", conn.SessionId, negotiatedSessionTimeout);
+				LOG.Info(string.Format("Session establishment complete on server {0:X}, negotiated timeout = {1}", conn.SessionId, negotiatedSessionTimeout));
                 conn.consumer.QueueEvent(new WatchedEvent(KeeperState.SyncConnected, EventType.None, null));
             }
         }
@@ -545,7 +545,7 @@ namespace ZooKeeperNet
                 {
                     // -2 is the xid for pings
                     if (LOG.IsDebugEnabled)
-                        LOG.DebugFormat("Got ping response for sessionid: 0x{0:X} after {1}ms", conn.SessionId, (DateTime.UtcNow.Nanos() - lastPingSentNs) / 1000000);
+						LOG.Debug(string.Format("Got ping response for sessionid: 0x{0:X} after {1}ms", conn.SessionId, (DateTime.UtcNow.Nanos() - lastPingSentNs) / 1000000));
                     return;
                 }
                 if (replyHdr.Xid == -4)
@@ -553,14 +553,14 @@ namespace ZooKeeperNet
                     // -2 is the xid for AuthPacket
                     // TODO: process AuthPacket here
                     if (LOG.IsDebugEnabled)
-                        LOG.DebugFormat("Got auth sessionid:0x{0:X}", conn.SessionId);
+						LOG.Debug(string.Format("Got auth sessionid:0x{0:X}", conn.SessionId));
                     return;
                 }
                 if (replyHdr.Xid == -1)
                 {
                     // -1 means notification
                     if (LOG.IsDebugEnabled)
-                        LOG.DebugFormat("Got notification sessionid:0x{0}", conn.SessionId);
+						LOG.Debug(string.Format("Got notification sessionid:0x{0}", conn.SessionId));
 
                     WatcherEvent @event = new WatcherEvent();
                     @event.Deserialize(bbia, "response");
@@ -577,7 +577,7 @@ namespace ZooKeeperNet
 
                     WatchedEvent we = new WatchedEvent(@event);
                     if (LOG.IsDebugEnabled)
-                        LOG.DebugFormat("Got {0} for sessionid 0x{1:X}", we, conn.SessionId);
+						LOG.Debug(string.Format("Got {0} for sessionid 0x{1:X}", we, conn.SessionId));
 
                     conn.consumer.QueueEvent(we);
                     return;
@@ -607,7 +607,7 @@ namespace ZooKeeperNet
                             packet.response.Deserialize(bbia, "response");
 
                         if (LOG.IsDebugEnabled)
-                            LOG.DebugFormat("Reading reply sessionid:0x{0:X}, packet:: {1}", conn.SessionId, packet);
+							LOG.Debug(string.Format("Reading reply sessionid:0x{0:X}, packet:: {1}", conn.SessionId, packet));
                     }
                     finally
                     {
@@ -659,7 +659,7 @@ namespace ZooKeeperNet
                 }
                 catch (Exception ex)
                 {
-                    LOG.WarnFormat("Error disposing {0} : {1}", this.GetType().FullName, ex.Message);
+					LOG.Warn(string.Format("Error disposing {0} : {1}", this.GetType().FullName, ex.Message));
                 }
                 
                 incomingBuffer = juteBuffer = null;

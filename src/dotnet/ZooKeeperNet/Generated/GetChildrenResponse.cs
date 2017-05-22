@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Proto
 {
 public class GetChildrenResponse : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(GetChildrenResponse));
+private static Logger log = LogManager.GetLogger(nameof(GetChildrenResponse));
   public GetChildrenResponse() {
   }
   public GetChildrenResponse(

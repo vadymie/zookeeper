@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Txn
 {
 public class CreateTxnV0 : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(CreateTxnV0));
+private static Logger log = LogManager.GetLogger(nameof(CreateTxnV0));
   public CreateTxnV0() {
   }
   public CreateTxnV0(

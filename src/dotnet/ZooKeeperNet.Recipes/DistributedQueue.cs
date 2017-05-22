@@ -4,13 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
-    using Common.Logging;
+    using NLog;
     using Org.Apache.Zookeeper.Data;
 
 
     public class DistributedQueue
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(DistributedQueue));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(DistributedQueue));
 
         private readonly string dir;
         private readonly ZooKeeper zookeeper;
@@ -42,7 +42,7 @@
                     bool matches = childName.Length > prefix.Length && childName.Substring(0, prefix.Length) == prefix;
                     if (!matches)
                     {
-                        LOG.WarnFormat("Found child node with improper name: {0}", childName);
+						LOG.Warn(string.Format("Found child node with improper name: {0}", childName));
                         continue;
                     }
                     string suffix = childName.Substring(prefix.Length);
@@ -51,7 +51,7 @@
                 }
                 catch (InvalidCastException e)
                 {
-                    LOG.WarnFormat("Found child node with improper format : {0} {1} {2}", childName, e, e.StackTrace);
+					LOG.Warn(string.Format("Found child node with improper format : {0} {1} {2}", childName, e, e.StackTrace));
                 }
             }
 
@@ -197,7 +197,7 @@
 
             public void Process(WatchedEvent @event)
             {
-                LOG.DebugFormat("Watcher fired on path: {0} state: {1} type {2}", @event.Path, @event.State, @event.Type);
+                LOG.Debug(string.Format("Watcher fired on path: {0} state: {1} type {2}", @event.Path, @event.State, @event.Type));
                 reset.Set();
             }
 

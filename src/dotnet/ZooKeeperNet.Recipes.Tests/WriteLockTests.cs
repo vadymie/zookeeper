@@ -2,7 +2,7 @@
 {
     using System;
     using System.Threading;
-    using Common.Logging;
+    using NLog;
     using NUnit.Framework;
     using ZooKeeperNet;
     using ZooKeeperNet.Recipes;
@@ -11,7 +11,7 @@
     [TestFixture]
     public class WriteLockTests : AbstractZooKeeperTests
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(WriteLockTests));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(WriteLockTests));
 
         protected int sessionTimeout = 10 * 1000;
         protected String dir = "/" + Guid.NewGuid();

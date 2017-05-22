@@ -21,7 +21,7 @@ namespace ZooKeeperNet.Tests
     using System.Net;
     using System.Threading;
     using System.Collections.Generic;
-    using Common.Logging;
+    using NLog;
     using NUnit.Framework;
     using Org.Apache.Zookeeper.Data;
 
@@ -32,7 +32,7 @@ namespace ZooKeeperNet.Tests
         private const int retryCeiling = 10;
         private readonly TimeSpan defaultbackoffInterval = new TimeSpan(0, 2, 0);
         private readonly List<string> ips = new List<string>{"1.1.1.1", "1.1.1.2", "1.1.1.3", "1.1.1.4", "1.1.1.5"};
-        private readonly ILog LOG = LogManager.GetLogger(typeof(ZooKeeperEndPointTests));
+        private readonly Logger LOG = LogManager.GetLogger(nameof(ZooKeeperEndPointTests));
         private ZooKeeperEndpoints zkEndpoints = null;
 
         [SetUp]

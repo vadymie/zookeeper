@@ -19,12 +19,12 @@
 
 namespace ZooKeeperNet
 {
-    using Common.Logging;
+    using NLog;
 
     public class SafeThreadStart
     {
         private readonly Action action;
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(SafeThreadStart));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(SafeThreadStart));
 
         public SafeThreadStart(Action action)
         {

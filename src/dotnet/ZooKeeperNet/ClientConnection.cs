@@ -25,13 +25,13 @@ namespace ZooKeeperNet
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;
-    using Common.Logging;
+    using NLog;
     using Org.Apache.Jute;
     using Org.Apache.Zookeeper.Proto;
 
     public class ClientConnection : IClientConnection
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ClientConnection));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ClientConnection));
 
         private static readonly TimeSpan DefaultConnectTimeout = TimeSpan.FromMilliseconds(500);        
         private static bool disableAutoWatchReset = false;
@@ -368,7 +368,7 @@ namespace ZooKeeperNet
             {
                 //closing = true;
                 if (LOG.IsDebugEnabled)
-                    LOG.DebugFormat("Closing client for session: 0x{0:X}", SessionId);
+                    LOG.Debug(string.Format("Closing client for session: 0x{0:X}", SessionId));
 
                 try
                 {
@@ -395,7 +395,7 @@ namespace ZooKeeperNet
                 }
                 catch (Exception ex)
                 {
-                    LOG.WarnFormat("Error disposing {0} : {1}", this.GetType().FullName, ex.Message);
+                    LOG.Warn(string.Format("Error disposing {0} : {1}", this.GetType().FullName, ex.Message));
                 }
                 finally
                 {

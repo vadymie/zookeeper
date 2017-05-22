@@ -16,7 +16,7 @@
  *
  */
 ﻿using System.Collections.Generic;
-﻿using Common.Logging;
+﻿using NLog;
 
 namespace ZooKeeperNet
 {
@@ -27,7 +27,7 @@ namespace ZooKeeperNet
 
     public static class ZooKeeperEx
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ZooKeeperEx));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ZooKeeperEx));
 
         public static TValue GetAndRemove<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
         {
@@ -98,7 +98,7 @@ namespace ZooKeeperNet
                 }
                 catch (Exception ex)
                 {
-                    LOG.WarnFormat("Error disposing {0} : {1}", this.GetType().FullName, ex.Message);
+					LOG.Warn(string.Format("Error disposing {0} : {1}", this.GetType().FullName, ex.Message));
                 }
                 
             }

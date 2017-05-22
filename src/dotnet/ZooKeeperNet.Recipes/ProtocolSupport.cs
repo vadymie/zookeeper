@@ -4,12 +4,12 @@
     using System.Collections.Generic;
     using System.Text;
     using System.Threading;
-    using Common.Logging;
+    using NLog;
     using Org.Apache.Zookeeper.Data;
  
     public abstract class ProtocolSupport : IDisposable
     {
-        protected static readonly ILog LOG = LogManager.GetLogger(typeof(ProtocolSupport));
+        protected static readonly Logger LOG = LogManager.GetLogger(nameof(ProtocolSupport));
 
         private int closed;
 
@@ -46,21 +46,21 @@
                 }
                 catch (KeeperException.SessionExpiredException e)
                 {
-                    LOG.WarnFormat("Session expired for: {0} so reconnecting due to: {1} {2}",Zookeeper,e, e.StackTrace);
+					LOG.Warn(string.Format("Session expired for: {0} so reconnecting due to: {1} {2}",Zookeeper,e, e.StackTrace));
                     throw e;
                 }
                 catch (KeeperException.ConnectionLossException e)
                 {
                     if (exception == null)
                         exception = e;
-                    LOG.DebugFormat("Attempt {0} failed with connection loss so attempting to reconnect: {1} {2}", e, e.StackTrace);
+					LOG.Debug(string.Format("Attempt {0} failed with connection loss so attempting to reconnect: {1} {2}", e, e.StackTrace));
                     DoRetryDelay(i);
                 }
                 catch (TimeoutException e)
                 {
                     if (exception == null)
                         exception = KeeperException.Create(KeeperException.Code.OPERATIONTIMEOUT);
-                    LOG.DebugFormat("Attempt {0} failed with connection loss so attempting to reconnect: {1} {2}", e, e.StackTrace);
+					LOG.Debug(string.Format("Attempt {0} failed with connection loss so attempting to reconnect: {1} {2}", e, e.StackTrace));
                     DoRetryDelay(i);
                 }
             }
@@ -116,11 +116,11 @@
             }
             catch (KeeperException e)
             {
-                LOG.WarnFormat("Caught: {0} {1}", e, e.StackTrace);
+				LOG.Warn(string.Format("Caught: {0} {1}", e, e.StackTrace));
             }
             catch (ThreadInterruptedException e)
             {
-                LOG.WarnFormat("Caught: {0} {1}", e, e.StackTrace);
+				LOG.Warn(string.Format("Caught: {0} {1}", e, e.StackTrace));
             }
         }
 
@@ -147,7 +147,7 @@
                 }
                 catch (ThreadInterruptedException e)
                 {
-                    LOG.WarnFormat("Failed to sleep: {0} {1}", e, e.StackTrace);
+					LOG.Warn(string.Format("Failed to sleep: {0} {1}", e, e.StackTrace));
                 }
             }
         }

@@ -23,7 +23,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Runtime.CompilerServices;
-    using Common.Logging;
+    using NLog;
     using Org.Apache.Zookeeper.Data;
     using Org.Apache.Zookeeper.Proto;
     using System.Threading;
@@ -32,7 +32,7 @@
     [DebuggerDisplay("Id = {Id}")]
     public class ZooKeeper : IDisposable, IZooKeeper
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ZooKeeper));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ZooKeeper));
 
         private readonly ZKWatchManager watchManager = new ZKWatchManager();
 
@@ -268,7 +268,7 @@
         /// </param>
         public ZooKeeper(string connectstring, TimeSpan sessionTimeout, IWatcher watcher)
         {
-            LOG.InfoFormat("Initiating client connection, connectstring={0} sessionTimeout={1} watcher={2}", connectstring, sessionTimeout, watcher);
+			LOG.Info(string.Format("Initiating client connection, connectstring={0} sessionTimeout={1} watcher={2}", connectstring, sessionTimeout, watcher));
 
             watchManager.DefaultWatcher = watcher;
             cnxn = new ClientConnection(connectstring, sessionTimeout, this, watchManager);
@@ -277,7 +277,7 @@
 
         public ZooKeeper(string connectstring, TimeSpan sessionTimeout, IWatcher watcher, long sessionId, byte[] sessionPasswd)
         {
-            LOG.InfoFormat("Initiating client connection, connectstring={0} sessionTimeout={1} watcher={2} sessionId={3} sessionPasswd={4}", connectstring, sessionTimeout, watcher, sessionId, (sessionPasswd == null ? "<null>" : "<hidden>"));
+			LOG.Info(string.Format("Initiating client connection, connectstring={0} sessionTimeout={1} watcher={2} sessionId={3} sessionPasswd={4}", connectstring, sessionTimeout, watcher, sessionId, (sessionPasswd == null ? "<null>" : "<hidden>")));
 
             watchManager.DefaultWatcher = watcher;
             cnxn = new ClientConnection(connectstring, sessionTimeout, this, watchManager, sessionId, sessionPasswd);
@@ -398,7 +398,7 @@
 
             if (LOG.IsDebugEnabled)
             {
-                LOG.DebugFormat("Closing session: 0x{0:X}", SessionId);
+				LOG.Debug(string.Format("Closing session: 0x{0:X}", SessionId));
             }
 
             try
@@ -413,7 +413,7 @@
                 }
             }
 
-            LOG.DebugFormat("Session: 0x{0:X} closed", SessionId);
+			LOG.Debug(string.Format("Session: 0x{0:X} closed", SessionId));
         }
 
         public void Dispose()

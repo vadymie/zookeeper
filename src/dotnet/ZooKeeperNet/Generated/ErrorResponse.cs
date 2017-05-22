@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Proto
 {
 public class ErrorResponse : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(ErrorResponse));
+private static Logger log = LogManager.GetLogger(nameof(ErrorResponse));
   public ErrorResponse() {
   }
   public ErrorResponse(

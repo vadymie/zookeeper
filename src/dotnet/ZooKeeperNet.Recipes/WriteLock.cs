@@ -76,7 +76,7 @@
             }
             catch (KeeperException e)
             {
-                LOG.WarnFormat("Caught: {0} {1}",e, e.StackTrace);
+				LOG.Warn(string.Format("Caught: {0} {1}",e, e.StackTrace));
                 throw;
             }
             finally
@@ -103,7 +103,7 @@
                 var names = Zookeeper.GetChildren(dir, false);
                 if (names.IsEmpty())
                 {
-                    LOG.WarnFormat("No children in: {0} when we've just created one! Lets recreate it...",dir);
+					LOG.Warn(string.Format("No children in: {0} when we've just created one! Lets recreate it...",dir));
                     // lets force the recreation of the id
                     id = null;
                 }
@@ -123,15 +123,15 @@
                         lastChildId = lastChildName.Name;
                         if (LOG.IsDebugEnabled)
                         {
-                            LOG.DebugFormat("watching less than me node: {0}", lastChildId);
+							LOG.Debug(string.Format("watching less than me node: {0}", lastChildId));
                         }
                         Stat stat = Zookeeper.Exists(lastChildId, new LockWatcher(this));
                         if (stat != null)
                         {
                             return false;
                         }
-                            
-                        LOG.WarnFormat("Could not find the stats for less than me: {0}", lastChildName.Name);
+
+						LOG.Warn(string.Format("Could not find the stats for less than me: {0}", lastChildName.Name));
                     }
                     else
                     {
@@ -156,7 +156,7 @@
                     id = name;
                     if (LOG.IsDebugEnabled)
                     {
-                        LOG.DebugFormat("Found id created last time: {0}",id);
+						LOG.Debug(string.Format("Found id created last time: {0}",id));
                     }
                     break;
                 }
@@ -167,7 +167,7 @@
 
                 if (LOG.IsDebugEnabled)
                 {
-                    LOG.DebugFormat("Created id: {0}",id);
+					LOG.Debug(string.Format("Created id: {0}",id));
                 }
             }
 
@@ -202,14 +202,14 @@
             public void Process(WatchedEvent @event)
             {
                 if (LOG.IsDebugEnabled)
-                    LOG.DebugFormat("Watcher fired on path: {0} state: {1} type {2}", @event.Path, @event.State, @event.Type);
+					LOG.Debug(string.Format("Watcher fired on path: {0} state: {1} type {2}", @event.Path, @event.State, @event.Type));
                 try
                 {
                     writeLock.Lock();
                 }
                 catch (Exception e)
                 {
-                    LOG.WarnFormat("Failed to acquire lock: {0} {1}", e, e.StackTrace);
+                    LOG.Warn(string.Format("Failed to acquire lock: {0} {1}", e, e.StackTrace));
                 }
             }
         }

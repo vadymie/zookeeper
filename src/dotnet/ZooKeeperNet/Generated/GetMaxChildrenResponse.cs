@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Proto
 {
 public class GetMaxChildrenResponse : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(GetMaxChildrenResponse));
+private static Logger log = LogManager.GetLogger(nameof(GetMaxChildrenResponse));
   public GetMaxChildrenResponse() {
   }
   public GetMaxChildrenResponse(

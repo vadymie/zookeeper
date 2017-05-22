@@ -17,7 +17,7 @@
  */
 using System;
 using System.Threading;
-using Common.Logging;
+using NLog;
 using NUnit.Framework;
 using Org.Apache.Zookeeper.Data;
 
@@ -25,7 +25,7 @@ namespace ZooKeeperNet.Tests
 {
     public class RecoveryTest : AbstractZooKeeperTests, IWatcher
     {
-        private readonly ILog LOG = LogManager.GetLogger(typeof(RecoveryTest));
+        private readonly Logger LOG = LogManager.GetLogger(nameof(RecoveryTest));
         private int setDataCount;
         private int processCount;
         private readonly string testPath = "/unittests/recoverytests/" + Guid.NewGuid();

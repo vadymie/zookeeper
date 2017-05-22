@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Data
 {
 public class ZKId : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(ZKId));
+private static Logger log = LogManager.GetLogger(nameof(ZKId));
   public ZKId() {
   }
   public ZKId(

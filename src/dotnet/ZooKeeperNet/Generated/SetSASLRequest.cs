@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Proto
 {
 public class SetSASLRequest : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(SetSASLRequest));
+private static Logger log = LogManager.GetLogger(nameof(SetSASLRequest));
   public SetSASLRequest() {
   }
   public SetSASLRequest(

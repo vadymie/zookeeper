@@ -1,11 +1,11 @@
 ﻿namespace ZooKeeperNet.Recipes
 {
     using System;
-    using Common.Logging;
+    using NLog;
 
     public class ZNodeName : IComparable<ZNodeName>, IEquatable<ZNodeName>
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(ZNodeName));        
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(ZNodeName));        
         private readonly int sequence;
 
         public ZNodeName(string name)

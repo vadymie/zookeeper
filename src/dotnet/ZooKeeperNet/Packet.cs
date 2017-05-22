@@ -22,20 +22,19 @@ namespace ZooKeeperNet
     using System.IO;
     using System.Text;
     using System.Threading;
-    using Common.Logging;
+    using NLog;
     using Org.Apache.Jute;
     using Org.Apache.Zookeeper.Proto;
     using System;
 
     public class Packet
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(Packet));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(Packet));
 
         internal RequestHeader header;
         private string serverPath;
         internal ReplyHeader replyHeader;
         internal IRecord response;
-        private int finished;
         internal ZooKeeper.WatchRegistration watchRegistration;
         internal readonly byte[] data;
         public readonly DateTime DateCreated;
@@ -109,7 +108,6 @@ namespace ZooKeeperNet
 
             sb.Append("  clientPath:").Append(clientPath);
             sb.Append("  serverPath:").Append(serverPath);
-            sb.Append("    finished:").Append(finished);
             sb.Append("     header::").Append(header);
             sb.Append("replyHeader::").Append(replyHeader);
             sb.Append("    request::").Append(request);

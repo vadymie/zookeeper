@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Proto
 {
 public class ExistsRequest : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(ExistsRequest));
+private static Logger log = LogManager.GetLogger(nameof(ExistsRequest));
   public ExistsRequest() {
   }
   public ExistsRequest(

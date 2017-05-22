@@ -20,13 +20,13 @@
 using System;
 using System.Linq;
 using Org.Apache.Jute;
-using Common.Logging;
+using NLog;
 
 namespace Org.Apache.Zookeeper.Server.Persistence
 {
 public class FileHeader : IRecord, IComparable 
 {
-private static ILog log = LogManager.GetLogger(typeof(FileHeader));
+private static Logger log = LogManager.GetLogger(nameof(FileHeader));
   public FileHeader() {
   }
   public FileHeader(

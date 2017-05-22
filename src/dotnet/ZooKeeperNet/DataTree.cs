@@ -20,7 +20,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Common.Logging;
+    using NLog;
     using Org.Apache.Jute;
     using Org.Apache.Zookeeper.Data;
     using System.Text;
@@ -29,7 +29,7 @@
 
     public class DataTree
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(DataTree));
+        private static readonly Logger LOG = LogManager.GetLogger(nameof(DataTree));
 
         private readonly Dictionary<string, DataNode> nodes = new Dictionary<string, DataNode>();
 
@@ -118,7 +118,7 @@
             List<ACL> acls;
             if (!longKeyMap.TryGetValue(longVal, out acls))
             {
-                LOG.ErrorFormat("ERROR: ACL not available for long {0}", longVal);
+                LOG.Error(string.Format("ERROR: ACL not available for long {0}", longVal));
                 throw new InvalidOperationException(new StringBuilder("Failed to fetch acls for ").Append(longVal).ToString());
             }
             return acls;
