@@ -20,115 +20,128 @@
 using System;
 using System.Linq;
 using ZooKeeperNet.Jute;
-using NLog;
+using ZooKeeperNet.Log;
 
 namespace ZooKeeperNet.Proto
 {
-public class WatcherEvent : IRecord, IComparable 
-{
-private static Logger log = LogManager.GetLogger(nameof(WatcherEvent));
-  public WatcherEvent() {
-  }
-  public WatcherEvent(
-  int type
-,
-  int state
-,
-  string path
-) {
-Type=type;
-State=state;
-Path=path;
-  }
-  public int Type { get; set; } 
-  public int State { get; set; } 
-  public string Path { get; set; } 
-  public void Serialize(IOutputArchive a_, String tag) {
-    a_.StartRecord(this,tag);
-    a_.WriteInt(Type,"type");
-    a_.WriteInt(State,"state");
-    a_.WriteString(Path,"path");
-    a_.EndRecord(this,tag);
-  }
-  public void Deserialize(IInputArchive a_, String tag) {
-    a_.StartRecord(tag);
-    Type=a_.ReadInt("type");
-    State=a_.ReadInt("state");
-    Path=a_.ReadString("path");
-    a_.EndRecord(tag);
-}
-  public override String ToString() {
-    try {
-      System.IO.MemoryStream ms = new System.IO.MemoryStream();
-      using(ZooKeeperNet.IO.EndianBinaryWriter writer =
-        new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8)){
-      BinaryOutputArchive a_ = 
-        new BinaryOutputArchive(writer);
-      a_.StartRecord(this,string.Empty);
-    a_.WriteInt(Type,"type");
-    a_.WriteInt(State,"state");
-    a_.WriteString(Path,"path");
-      a_.EndRecord(this,string.Empty);
-      ms.Position = 0;
-      return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-    }    } catch (Exception ex) {
-      log.Error(ex);
-    }
-    return "ERROR";
-  }
-  public void Write(ZooKeeperNet.IO.EndianBinaryWriter writer) {
-    BinaryOutputArchive archive = new BinaryOutputArchive(writer);
-    Serialize(archive, string.Empty);
-  }
-  public void ReadFields(ZooKeeperNet.IO.EndianBinaryReader reader) {
-    BinaryInputArchive archive = new BinaryInputArchive(reader);
-    Deserialize(archive, string.Empty);
-  }
-  public int CompareTo (object obj) {
-    WatcherEvent peer = (WatcherEvent) obj;
-    if (peer == null) {
-      throw new InvalidOperationException("Comparing different types of records.");
-    }
-    int ret = 0;
-    ret = (Type == peer.Type)? 0 :((Type<peer.Type)?-1:1);
-    if (ret != 0) return ret;
-    ret = (State == peer.State)? 0 :((State<peer.State)?-1:1);
-    if (ret != 0) return ret;
-    ret = Path.CompareTo(peer.Path);
-    if (ret != 0) return ret;
-     return ret;
-  }
-  public override bool Equals(object obj) {
- WatcherEvent peer = (WatcherEvent) obj;
-    if (peer == null) {
-      return false;
-    }
-    if (Object.ReferenceEquals(peer,this)) {
-      return true;
-    }
-    bool ret = false;
-    ret = (Type==peer.Type);
-    if (!ret) return ret;
-    ret = (State==peer.State);
-    if (!ret) return ret;
-    ret = Path.Equals(peer.Path);
-    if (!ret) return ret;
-     return ret;
-  }
-  public override int GetHashCode() {
-    int result = 17;
-    int ret = GetType().GetHashCode();
-    result = 37*result + ret;
-    ret = (int)Type;
-    result = 37*result + ret;
-    ret = (int)State;
-    result = 37*result + ret;
-    ret = Path.GetHashCode();
-    result = 37*result + ret;
-    return result;
-  }
-  public static string Signature() {
-    return "LWatcherEvent(iis)";
-  }
-}
+	public class WatcherEvent : IRecord, IComparable
+	{
+		private static readonly ILogProducer log = TypeLogger<WatcherEvent>.Instance;
+		public WatcherEvent ()
+		{
+		}
+		public WatcherEvent (int type, int state, string path)
+		{
+			Type = type;
+			State = state;
+			Path = path;
+		}
+		public int Type { get; set; }
+		public int State { get; set; }
+		public string Path { get; set; }
+		public void Serialize (IOutputArchive a_, String tag)
+		{
+			a_.StartRecord(this, tag);
+			a_.WriteInt(Type, "type");
+			a_.WriteInt(State, "state");
+			a_.WriteString(Path, "path");
+			a_.EndRecord(this, tag);
+		}
+		public void Deserialize (IInputArchive a_, String tag)
+		{
+			a_.StartRecord(tag);
+			Type = a_.ReadInt("type");
+			State = a_.ReadInt("state");
+			Path = a_.ReadString("path");
+			a_.EndRecord(tag);
+		}
+		public override String ToString ()
+		{
+			try
+			{
+				System.IO.MemoryStream ms = new System.IO.MemoryStream();
+				using (ZooKeeperNet.IO.EndianBinaryWriter writer =
+				  new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8))
+				{
+					BinaryOutputArchive a_ =
+					  new BinaryOutputArchive(writer);
+					a_.StartRecord(this, string.Empty);
+					a_.WriteInt(Type, "type");
+					a_.WriteInt(State, "state");
+					a_.WriteString(Path, "path");
+					a_.EndRecord(this, string.Empty);
+					ms.Position = 0;
+					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Error(ex);
+			}
+			return "ERROR";
+		}
+		public void Write (ZooKeeperNet.IO.EndianBinaryWriter writer)
+		{
+			BinaryOutputArchive archive = new BinaryOutputArchive(writer);
+			Serialize(archive, string.Empty);
+		}
+		public void ReadFields (ZooKeeperNet.IO.EndianBinaryReader reader)
+		{
+			BinaryInputArchive archive = new BinaryInputArchive(reader);
+			Deserialize(archive, string.Empty);
+		}
+		public int CompareTo (object obj)
+		{
+			WatcherEvent peer = (WatcherEvent) obj;
+			if (peer == null)
+			{
+				throw new InvalidOperationException("Comparing different types of records.");
+			}
+			int ret = 0;
+			ret = (Type == peer.Type) ? 0 : ((Type < peer.Type) ? -1 : 1);
+			if (ret != 0) return ret;
+			ret = (State == peer.State) ? 0 : ((State < peer.State) ? -1 : 1);
+			if (ret != 0) return ret;
+			ret = Path.CompareTo(peer.Path);
+			if (ret != 0) return ret;
+			return ret;
+		}
+		public override bool Equals (object obj)
+		{
+			WatcherEvent peer = (WatcherEvent) obj;
+			if (peer == null)
+			{
+				return false;
+			}
+			if (Object.ReferenceEquals(peer, this))
+			{
+				return true;
+			}
+			bool ret = false;
+			ret = (Type == peer.Type);
+			if (!ret) return ret;
+			ret = (State == peer.State);
+			if (!ret) return ret;
+			ret = Path.Equals(peer.Path);
+			if (!ret) return ret;
+			return ret;
+		}
+		public override int GetHashCode ()
+		{
+			int result = 17;
+			int ret = GetType().GetHashCode();
+			result = 37 * result + ret;
+			ret = (int) Type;
+			result = 37 * result + ret;
+			ret = (int) State;
+			result = 37 * result + ret;
+			ret = Path.GetHashCode();
+			result = 37 * result + ret;
+			return result;
+		}
+		public static string Signature ()
+		{
+			return "LWatcherEvent(iis)";
+		}
+	}
 }

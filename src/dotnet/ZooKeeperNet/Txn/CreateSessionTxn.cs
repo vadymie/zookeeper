@@ -20,89 +20,106 @@
 using System;
 using System.Linq;
 using ZooKeeperNet.Jute;
-using NLog;
+using ZooKeeperNet.Log;
 
 namespace ZooKeeperNet.Txn
 {
-public class CreateSessionTxn : IRecord, IComparable 
-{
-private static Logger log = LogManager.GetLogger(nameof(CreateSessionTxn));
-  public CreateSessionTxn() {
-  }
-  public CreateSessionTxn(
-  int timeOut
-) {
-TimeOut=timeOut;
-  }
-  public int TimeOut { get; set; } 
-  public void Serialize(IOutputArchive a_, String tag) {
-    a_.StartRecord(this,tag);
-    a_.WriteInt(TimeOut,"timeOut");
-    a_.EndRecord(this,tag);
-  }
-  public void Deserialize(IInputArchive a_, String tag) {
-    a_.StartRecord(tag);
-    TimeOut=a_.ReadInt("timeOut");
-    a_.EndRecord(tag);
-}
-  public override String ToString() {
-    try {
-      System.IO.MemoryStream ms = new System.IO.MemoryStream();
-      using(ZooKeeperNet.IO.EndianBinaryWriter writer =
-        new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8)){
-      BinaryOutputArchive a_ = 
-        new BinaryOutputArchive(writer);
-      a_.StartRecord(this,string.Empty);
-    a_.WriteInt(TimeOut,"timeOut");
-      a_.EndRecord(this,string.Empty);
-      ms.Position = 0;
-      return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-    }    } catch (Exception ex) {
-      log.Error(ex);
-    }
-    return "ERROR";
-  }
-  public void Write(ZooKeeperNet.IO.EndianBinaryWriter writer) {
-    BinaryOutputArchive archive = new BinaryOutputArchive(writer);
-    Serialize(archive, string.Empty);
-  }
-  public void ReadFields(ZooKeeperNet.IO.EndianBinaryReader reader) {
-    BinaryInputArchive archive = new BinaryInputArchive(reader);
-    Deserialize(archive, string.Empty);
-  }
-  public int CompareTo (object obj) {
-    CreateSessionTxn peer = (CreateSessionTxn) obj;
-    if (peer == null) {
-      throw new InvalidOperationException("Comparing different types of records.");
-    }
-    int ret = 0;
-    ret = (TimeOut == peer.TimeOut)? 0 :((TimeOut<peer.TimeOut)?-1:1);
-    if (ret != 0) return ret;
-     return ret;
-  }
-  public override bool Equals(object obj) {
- CreateSessionTxn peer = (CreateSessionTxn) obj;
-    if (peer == null) {
-      return false;
-    }
-    if (Object.ReferenceEquals(peer,this)) {
-      return true;
-    }
-    bool ret = false;
-    ret = (TimeOut==peer.TimeOut);
-    if (!ret) return ret;
-     return ret;
-  }
-  public override int GetHashCode() {
-    int result = 17;
-    int ret = GetType().GetHashCode();
-    result = 37*result + ret;
-    ret = (int)TimeOut;
-    result = 37*result + ret;
-    return result;
-  }
-  public static string Signature() {
-    return "LCreateSessionTxn(i)";
-  }
-}
+	public class CreateSessionTxn : IRecord, IComparable
+	{
+		private static readonly ILogProducer log = TypeLogger<CreateSessionTxn>.Instance;
+		public CreateSessionTxn ()
+		{
+		}
+		public CreateSessionTxn (int timeOut)
+		{
+			TimeOut = timeOut;
+		}
+		public int TimeOut { get; set; }
+		public void Serialize (IOutputArchive a_, String tag)
+		{
+			a_.StartRecord(this, tag);
+			a_.WriteInt(TimeOut, "timeOut");
+			a_.EndRecord(this, tag);
+		}
+		public void Deserialize (IInputArchive a_, String tag)
+		{
+			a_.StartRecord(tag);
+			TimeOut = a_.ReadInt("timeOut");
+			a_.EndRecord(tag);
+		}
+		public override String ToString ()
+		{
+			try
+			{
+				System.IO.MemoryStream ms = new System.IO.MemoryStream();
+				using (ZooKeeperNet.IO.EndianBinaryWriter writer =
+				  new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8))
+				{
+					BinaryOutputArchive a_ =
+					  new BinaryOutputArchive(writer);
+					a_.StartRecord(this, string.Empty);
+					a_.WriteInt(TimeOut, "timeOut");
+					a_.EndRecord(this, string.Empty);
+					ms.Position = 0;
+					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Error(ex);
+			}
+			return "ERROR";
+		}
+		public void Write (ZooKeeperNet.IO.EndianBinaryWriter writer)
+		{
+			BinaryOutputArchive archive = new BinaryOutputArchive(writer);
+			Serialize(archive, string.Empty);
+		}
+		public void ReadFields (ZooKeeperNet.IO.EndianBinaryReader reader)
+		{
+			BinaryInputArchive archive = new BinaryInputArchive(reader);
+			Deserialize(archive, string.Empty);
+		}
+		public int CompareTo (object obj)
+		{
+			CreateSessionTxn peer = (CreateSessionTxn) obj;
+			if (peer == null)
+			{
+				throw new InvalidOperationException("Comparing different types of records.");
+			}
+			int ret = 0;
+			ret = (TimeOut == peer.TimeOut) ? 0 : ((TimeOut < peer.TimeOut) ? -1 : 1);
+			if (ret != 0) return ret;
+			return ret;
+		}
+		public override bool Equals (object obj)
+		{
+			CreateSessionTxn peer = (CreateSessionTxn) obj;
+			if (peer == null)
+			{
+				return false;
+			}
+			if (Object.ReferenceEquals(peer, this))
+			{
+				return true;
+			}
+			bool ret = false;
+			ret = (TimeOut == peer.TimeOut);
+			if (!ret) return ret;
+			return ret;
+		}
+		public override int GetHashCode ()
+		{
+			int result = 17;
+			int ret = GetType().GetHashCode();
+			result = 37 * result + ret;
+			ret = (int) TimeOut;
+			result = 37 * result + ret;
+			return result;
+		}
+		public static string Signature ()
+		{
+			return "LCreateSessionTxn(i)";
+		}
+	}
 }

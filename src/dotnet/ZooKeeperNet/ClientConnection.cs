@@ -25,15 +25,15 @@ namespace ZooKeeperNet
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;
-    using NLog;
+    using ZooKeeperNet.Log;
     using ZooKeeperNet.Jute;
     using ZooKeeperNet.Proto;
 
     public class ClientConnection : IClientConnection
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(ClientConnection));
+		private static readonly ILogProducer LOG = TypeLogger<ClientConnection>.Instance;
 
-        private static readonly TimeSpan DefaultConnectTimeout = TimeSpan.FromMilliseconds(500);        
+		private static readonly TimeSpan DefaultConnectTimeout = TimeSpan.FromMilliseconds(500);        
         private static bool disableAutoWatchReset = false;
         private static int maximumPacketLength = 1024 * 1024 * 4;
         private static int maximumSpin = 30;

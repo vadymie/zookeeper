@@ -58,9 +58,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\lib\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -74,6 +71,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ClientWatchManager.cs" />
+    <Compile Include="Log\Fenced.cs" />
+    <Compile Include="Log\ILogConsumer.cs" />
+    <Compile Include="Log\ILogProducer.cs" />
+    <Compile Include="Log\LogWriter.cs" />
+    <Compile Include="Log\NonBlockingFileWriter.cs" />
+    <Compile Include="Log\ThreadSafeInt.cs" />
+    <Compile Include="Log\TraceWriter.cs" />
+    <Compile Include="Log\TypeLogger.cs" />
+    <Compile Include="Log\ZooKeeperLogger.cs" />
     <Compile Include="RetryPolicy.cs" />
     <Compile Include="ZKPaths.cs" />
     <Compile Include="CreateMode.cs" />

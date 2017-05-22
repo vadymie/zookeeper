@@ -20,89 +20,106 @@
 using System;
 using System.Linq;
 using ZooKeeperNet.Jute;
-using NLog;
+using ZooKeeperNet.Log;
 
 namespace ZooKeeperNet.Proto
 {
-public class GetMaxChildrenResponse : IRecord, IComparable 
-{
-private static Logger log = LogManager.GetLogger(nameof(GetMaxChildrenResponse));
-  public GetMaxChildrenResponse() {
-  }
-  public GetMaxChildrenResponse(
-  int max
-) {
-Max=max;
-  }
-  public int Max { get; set; } 
-  public void Serialize(IOutputArchive a_, String tag) {
-    a_.StartRecord(this,tag);
-    a_.WriteInt(Max,"max");
-    a_.EndRecord(this,tag);
-  }
-  public void Deserialize(IInputArchive a_, String tag) {
-    a_.StartRecord(tag);
-    Max=a_.ReadInt("max");
-    a_.EndRecord(tag);
-}
-  public override String ToString() {
-    try {
-      System.IO.MemoryStream ms = new System.IO.MemoryStream();
-      using(ZooKeeperNet.IO.EndianBinaryWriter writer =
-        new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8)){
-      BinaryOutputArchive a_ = 
-        new BinaryOutputArchive(writer);
-      a_.StartRecord(this,string.Empty);
-    a_.WriteInt(Max,"max");
-      a_.EndRecord(this,string.Empty);
-      ms.Position = 0;
-      return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-    }    } catch (Exception ex) {
-      log.Error(ex);
-    }
-    return "ERROR";
-  }
-  public void Write(ZooKeeperNet.IO.EndianBinaryWriter writer) {
-    BinaryOutputArchive archive = new BinaryOutputArchive(writer);
-    Serialize(archive, string.Empty);
-  }
-  public void ReadFields(ZooKeeperNet.IO.EndianBinaryReader reader) {
-    BinaryInputArchive archive = new BinaryInputArchive(reader);
-    Deserialize(archive, string.Empty);
-  }
-  public int CompareTo (object obj) {
-    GetMaxChildrenResponse peer = (GetMaxChildrenResponse) obj;
-    if (peer == null) {
-      throw new InvalidOperationException("Comparing different types of records.");
-    }
-    int ret = 0;
-    ret = (Max == peer.Max)? 0 :((Max<peer.Max)?-1:1);
-    if (ret != 0) return ret;
-     return ret;
-  }
-  public override bool Equals(object obj) {
- GetMaxChildrenResponse peer = (GetMaxChildrenResponse) obj;
-    if (peer == null) {
-      return false;
-    }
-    if (Object.ReferenceEquals(peer,this)) {
-      return true;
-    }
-    bool ret = false;
-    ret = (Max==peer.Max);
-    if (!ret) return ret;
-     return ret;
-  }
-  public override int GetHashCode() {
-    int result = 17;
-    int ret = GetType().GetHashCode();
-    result = 37*result + ret;
-    ret = (int)Max;
-    result = 37*result + ret;
-    return result;
-  }
-  public static string Signature() {
-    return "LGetMaxChildrenResponse(i)";
-  }
-}
+	public class GetMaxChildrenResponse : IRecord, IComparable
+	{
+		private static readonly ILogProducer log = TypeLogger<GetMaxChildrenResponse>.Instance;
+		public GetMaxChildrenResponse ()
+		{
+		}
+		public GetMaxChildrenResponse (int max)
+		{
+			Max = max;
+		}
+		public int Max { get; set; }
+		public void Serialize (IOutputArchive a_, String tag)
+		{
+			a_.StartRecord(this, tag);
+			a_.WriteInt(Max, "max");
+			a_.EndRecord(this, tag);
+		}
+		public void Deserialize (IInputArchive a_, String tag)
+		{
+			a_.StartRecord(tag);
+			Max = a_.ReadInt("max");
+			a_.EndRecord(tag);
+		}
+		public override String ToString ()
+		{
+			try
+			{
+				System.IO.MemoryStream ms = new System.IO.MemoryStream();
+				using (ZooKeeperNet.IO.EndianBinaryWriter writer =
+				  new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8))
+				{
+					BinaryOutputArchive a_ =
+					  new BinaryOutputArchive(writer);
+					a_.StartRecord(this, string.Empty);
+					a_.WriteInt(Max, "max");
+					a_.EndRecord(this, string.Empty);
+					ms.Position = 0;
+					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Error(ex);
+			}
+			return "ERROR";
+		}
+		public void Write (ZooKeeperNet.IO.EndianBinaryWriter writer)
+		{
+			BinaryOutputArchive archive = new BinaryOutputArchive(writer);
+			Serialize(archive, string.Empty);
+		}
+		public void ReadFields (ZooKeeperNet.IO.EndianBinaryReader reader)
+		{
+			BinaryInputArchive archive = new BinaryInputArchive(reader);
+			Deserialize(archive, string.Empty);
+		}
+		public int CompareTo (object obj)
+		{
+			GetMaxChildrenResponse peer = (GetMaxChildrenResponse) obj;
+			if (peer == null)
+			{
+				throw new InvalidOperationException("Comparing different types of records.");
+			}
+			int ret = 0;
+			ret = (Max == peer.Max) ? 0 : ((Max < peer.Max) ? -1 : 1);
+			if (ret != 0) return ret;
+			return ret;
+		}
+		public override bool Equals (object obj)
+		{
+			GetMaxChildrenResponse peer = (GetMaxChildrenResponse) obj;
+			if (peer == null)
+			{
+				return false;
+			}
+			if (Object.ReferenceEquals(peer, this))
+			{
+				return true;
+			}
+			bool ret = false;
+			ret = (Max == peer.Max);
+			if (!ret) return ret;
+			return ret;
+		}
+		public override int GetHashCode ()
+		{
+			int result = 17;
+			int ret = GetType().GetHashCode();
+			result = 37 * result + ret;
+			ret = (int) Max;
+			result = 37 * result + ret;
+			return result;
+		}
+		public static string Signature ()
+		{
+			return "LGetMaxChildrenResponse(i)";
+		}
+	}
 }

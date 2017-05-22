@@ -22,16 +22,16 @@ namespace ZooKeeperNet
     using System.IO;
     using System.Text;
     using System.Threading;
-    using NLog;
+    using ZooKeeperNet.Log;
     using ZooKeeperNet.Jute;
     using ZooKeeperNet.Proto;
     using System;
 
     public class Packet
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(Packet));
+		private static readonly ILogProducer LOG = TypeLogger<Packet>.Instance;
 
-        internal RequestHeader header;
+		internal RequestHeader header;
         private string serverPath;
         internal ReplyHeader replyHeader;
         internal IRecord response;

@@ -19,16 +19,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using NLog;
+    using ZooKeeperNet.Log;
     using System.Text;
     using System.Collections.Concurrent;
     using System.Threading;
 
     public class ZKWatchManager : IClientWatchManager 
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(ZKWatchManager));
+		private static readonly ILogProducer LOG = TypeLogger<ZKWatchManager>.Instance;
 
-        internal readonly ConcurrentDictionary<string, HashSet<IWatcher>> dataWatches = new ConcurrentDictionary<string, HashSet<IWatcher>>();
+		internal readonly ConcurrentDictionary<string, HashSet<IWatcher>> dataWatches = new ConcurrentDictionary<string, HashSet<IWatcher>>();
         internal readonly ConcurrentDictionary<string, HashSet<IWatcher>> existWatches = new ConcurrentDictionary<string, HashSet<IWatcher>>();
         internal readonly ConcurrentDictionary<string, HashSet<IWatcher>> childWatches = new ConcurrentDictionary<string, HashSet<IWatcher>>();
 

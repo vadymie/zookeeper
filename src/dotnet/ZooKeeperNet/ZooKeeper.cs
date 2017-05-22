@@ -17,24 +17,24 @@
  */
 ﻿namespace ZooKeeperNet
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Runtime.CompilerServices;
-    using NLog;
-    using ZooKeeperNet.Data;
-    using ZooKeeperNet.Proto;
-    using System.Threading;
-    using System.Text;
+	using System;
+	using System.Linq;
+	using System.Collections.Generic;
+	using System.Diagnostics;
+	using System.IO;
+	using System.Runtime.CompilerServices;
+	using ZooKeeperNet.Data;
+	using ZooKeeperNet.Proto;
+	using System.Threading;
+	using System.Text;
+	using ZooKeeperNet.Log;
 
-    [DebuggerDisplay("Id = {Id}")]
+	[DebuggerDisplay("Id = {Id}")]
     public class ZooKeeper : IDisposable, IZooKeeper
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(ZooKeeper));
+		private static readonly ILogProducer LOG = TypeLogger<ZooKeeper>.Instance;
 
-        private readonly ZKWatchManager watchManager = new ZKWatchManager();
+		private readonly ZKWatchManager watchManager = new ZKWatchManager();
 
         public IEnumerable<string> DataWatches
         {
@@ -979,5 +979,52 @@
                 .Append(cnxn);
             return builder.ToString();
         }
-    }
+
+		/// <summary>
+		/// Should ZooKeeper log be written to a file named <see cref="LogFileName"/>
+		/// </summary>
+		public static bool LogToFile
+		{
+			get { return ZooKeeperLogger.Instance.LogToFile; }
+			set { ZooKeeperLogger.Instance.LogToFile = value; }
+		}
+		/// <summary>
+		/// Should ZooKeeper log be written to trace.
+		/// The log level is controlled by <see cref="LogLevel"/>
+		/// </summary>
+		public static bool LogToTrace
+		{
+			get { return ZooKeeperLogger.Instance.LogToTrace; }
+			set { ZooKeeperLogger.Instance.LogToTrace = value; }
+		}
+
+		/// <summary>
+		/// The file name of the log used when <see cref="LogToFile"/> is true.
+		/// The log level is controlled by <see cref="LogLevel"/>
+		/// </summary>
+		public static string LogFileName
+		{
+			get { return ZooKeeperLogger.Instance.LogFileName; }
+		}
+
+		/// <summary>
+		/// The minimum log level that should be written to the output. The output can be set via the
+		/// <see cref="LogToTrace"/>, <see cref="LogToFile"/> and <see cref="CustomLogConsumer"/>
+		/// </summary>
+		public static TraceLevel LogLevel
+		{
+			get { return ZooKeeperLogger.Instance.LogLevel; }
+			set { ZooKeeperLogger.Instance.LogLevel = value; }
+		}
+
+		/// <summary>
+		/// This is for providing an external logger. 
+		/// The log level is controlled by <see cref="LogLevel"/>
+		/// </summary>
+		public static ILogConsumer CustomLogConsumer
+		{
+			get { return ZooKeeperLogger.Instance.CustomLogConsumer; }
+			set { ZooKeeperLogger.Instance.CustomLogConsumer = value; }
+		}
+	}
 }

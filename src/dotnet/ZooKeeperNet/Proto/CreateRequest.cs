@@ -20,141 +20,160 @@
 using System;
 using System.Linq;
 using ZooKeeperNet.Jute;
-using NLog;
+using ZooKeeperNet.Log;
 
 namespace ZooKeeperNet.Proto
 {
-public class CreateRequest : IRecord, IComparable 
-{
-private static Logger log = LogManager.GetLogger(nameof(CreateRequest));
-  public CreateRequest() {
-  }
-  public CreateRequest(
-  string path
-,
-  byte[] data
-,
-  System.Collections.Generic.IEnumerable<ZooKeeperNet.Data.ACL> acl
-,
-  int flags
-) {
-Path=path;
-Data=data;
-Acl=acl;
-Flags=flags;
-  }
-  public string Path { get; set; } 
-  public byte[] Data { get; set; } 
-  public System.Collections.Generic.IEnumerable<ZooKeeperNet.Data.ACL> Acl { get; set; } 
-  public int Flags { get; set; } 
-  public void Serialize(IOutputArchive a_, String tag) {
-    a_.StartRecord(this,tag);
-    a_.WriteString(Path,"path");
-    a_.WriteBuffer(Data,"data");
-    {
-      a_.StartVector(Acl,"acl");
-      if (Acl!= null) {          foreach(var e1 in Acl) {
-    a_.WriteRecord(e1,"e1");
-          }
-      }
-      a_.EndVector(Acl,"acl");
-    }
-    a_.WriteInt(Flags,"flags");
-    a_.EndRecord(this,tag);
-  }
-  public void Deserialize(IInputArchive a_, String tag) {
-    a_.StartRecord(tag);
-    Path=a_.ReadString("path");
-    Data=a_.ReadBuffer("data");
-    {
-      IIndex vidx1 = a_.StartVector("acl");
-      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<ZooKeeperNet.Data.ACL>();
-          for (; !vidx1.Done(); vidx1.Incr()) {
-    ZooKeeperNet.Data.ACL e1;
-    e1= new ZooKeeperNet.Data.ACL();
-    a_.ReadRecord(e1,"e1");
-            tmpLst.Add(e1);
-          }
-            Acl=tmpLst;
-      }
-    a_.EndVector("acl");
-    }
-    Flags=a_.ReadInt("flags");
-    a_.EndRecord(tag);
-}
-  public override String ToString() {
-    try {
-      System.IO.MemoryStream ms = new System.IO.MemoryStream();
-      using(ZooKeeperNet.IO.EndianBinaryWriter writer =
-        new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8)){
-      BinaryOutputArchive a_ = 
-        new BinaryOutputArchive(writer);
-      a_.StartRecord(this,string.Empty);
-    a_.WriteString(Path,"path");
-    a_.WriteBuffer(Data,"data");
-    {
-      a_.StartVector(Acl,"acl");
-      if (Acl!= null) {          foreach(var e1 in Acl) {
-    a_.WriteRecord(e1,"e1");
-          }
-      }
-      a_.EndVector(Acl,"acl");
-    }
-    a_.WriteInt(Flags,"flags");
-      a_.EndRecord(this,string.Empty);
-      ms.Position = 0;
-      return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-    }    } catch (Exception ex) {
-      log.Error(ex);
-    }
-    return "ERROR";
-  }
-  public void Write(ZooKeeperNet.IO.EndianBinaryWriter writer) {
-    BinaryOutputArchive archive = new BinaryOutputArchive(writer);
-    Serialize(archive, string.Empty);
-  }
-  public void ReadFields(ZooKeeperNet.IO.EndianBinaryReader reader) {
-    BinaryInputArchive archive = new BinaryInputArchive(reader);
-    Deserialize(archive, string.Empty);
-  }
-  public int CompareTo (object obj) {
-    throw new InvalidOperationException("comparing CreateRequest is unimplemented");
-  }
-  public override bool Equals(object obj) {
- CreateRequest peer = (CreateRequest) obj;
-    if (peer == null) {
-      return false;
-    }
-    if (Object.ReferenceEquals(peer,this)) {
-      return true;
-    }
-    bool ret = false;
-    ret = Path.Equals(peer.Path);
-    if (!ret) return ret;
-    ret = Data.Equals(peer.Data);
-    if (!ret) return ret;
-    ret = Acl.Equals(peer.Acl);
-    if (!ret) return ret;
-    ret = (Flags==peer.Flags);
-    if (!ret) return ret;
-     return ret;
-  }
-  public override int GetHashCode() {
-    int result = 17;
-    int ret = GetType().GetHashCode();
-    result = 37*result + ret;
-    ret = Path.GetHashCode();
-    result = 37*result + ret;
-    ret = Data.GetHashCode();
-    result = 37*result + ret;
-    ret = Acl.GetHashCode();
-    result = 37*result + ret;
-    ret = (int)Flags;
-    result = 37*result + ret;
-    return result;
-  }
-  public static string Signature() {
-    return "LCreateRequest(sB[LACL(iLId(ss))]i)";
-  }
-}
+	public class CreateRequest : IRecord, IComparable
+	{
+		private static readonly ILogProducer log = TypeLogger<CreateRequest>.Instance;
+		public CreateRequest ()
+		{
+		}
+		public CreateRequest (string path, byte[] data, System.Collections.Generic.IEnumerable<ZooKeeperNet.Data.ACL> acl, int flags)
+		{
+			Path = path;
+			Data = data;
+			Acl = acl;
+			Flags = flags;
+		}
+		public string Path { get; set; }
+		public byte[] Data { get; set; }
+		public System.Collections.Generic.IEnumerable<ZooKeeperNet.Data.ACL> Acl { get; set; }
+		public int Flags { get; set; }
+		public void Serialize (IOutputArchive a_, String tag)
+		{
+			a_.StartRecord(this, tag);
+			a_.WriteString(Path, "path");
+			a_.WriteBuffer(Data, "data");
+			{
+				a_.StartVector(Acl, "acl");
+				if (Acl != null)
+				{
+					foreach (var e1 in Acl)
+					{
+						a_.WriteRecord(e1, "e1");
+					}
+				}
+				a_.EndVector(Acl, "acl");
+			}
+			a_.WriteInt(Flags, "flags");
+			a_.EndRecord(this, tag);
+		}
+		public void Deserialize (IInputArchive a_, String tag)
+		{
+			a_.StartRecord(tag);
+			Path = a_.ReadString("path");
+			Data = a_.ReadBuffer("data");
+			{
+				IIndex vidx1 = a_.StartVector("acl");
+				if (vidx1 != null)
+				{
+					var tmpLst = new System.Collections.Generic.List<ZooKeeperNet.Data.ACL>();
+					for (; !vidx1.Done(); vidx1.Incr())
+					{
+						ZooKeeperNet.Data.ACL e1;
+						e1 = new ZooKeeperNet.Data.ACL();
+						a_.ReadRecord(e1, "e1");
+						tmpLst.Add(e1);
+					}
+					Acl = tmpLst;
+				}
+				a_.EndVector("acl");
+			}
+			Flags = a_.ReadInt("flags");
+			a_.EndRecord(tag);
+		}
+		public override String ToString ()
+		{
+			try
+			{
+				System.IO.MemoryStream ms = new System.IO.MemoryStream();
+				using (ZooKeeperNet.IO.EndianBinaryWriter writer =
+				  new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8))
+				{
+					BinaryOutputArchive a_ =
+					  new BinaryOutputArchive(writer);
+					a_.StartRecord(this, string.Empty);
+					a_.WriteString(Path, "path");
+					a_.WriteBuffer(Data, "data");
+					{
+						a_.StartVector(Acl, "acl");
+						if (Acl != null)
+						{
+							foreach (var e1 in Acl)
+							{
+								a_.WriteRecord(e1, "e1");
+							}
+						}
+						a_.EndVector(Acl, "acl");
+					}
+					a_.WriteInt(Flags, "flags");
+					a_.EndRecord(this, string.Empty);
+					ms.Position = 0;
+					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Error(ex);
+			}
+			return "ERROR";
+		}
+		public void Write (ZooKeeperNet.IO.EndianBinaryWriter writer)
+		{
+			BinaryOutputArchive archive = new BinaryOutputArchive(writer);
+			Serialize(archive, string.Empty);
+		}
+		public void ReadFields (ZooKeeperNet.IO.EndianBinaryReader reader)
+		{
+			BinaryInputArchive archive = new BinaryInputArchive(reader);
+			Deserialize(archive, string.Empty);
+		}
+		public int CompareTo (object obj)
+		{
+			throw new InvalidOperationException("comparing CreateRequest is unimplemented");
+		}
+		public override bool Equals (object obj)
+		{
+			CreateRequest peer = (CreateRequest) obj;
+			if (peer == null)
+			{
+				return false;
+			}
+			if (Object.ReferenceEquals(peer, this))
+			{
+				return true;
+			}
+			bool ret = false;
+			ret = Path.Equals(peer.Path);
+			if (!ret) return ret;
+			ret = Data.Equals(peer.Data);
+			if (!ret) return ret;
+			ret = Acl.Equals(peer.Acl);
+			if (!ret) return ret;
+			ret = (Flags == peer.Flags);
+			if (!ret) return ret;
+			return ret;
+		}
+		public override int GetHashCode ()
+		{
+			int result = 17;
+			int ret = GetType().GetHashCode();
+			result = 37 * result + ret;
+			ret = Path.GetHashCode();
+			result = 37 * result + ret;
+			ret = Data.GetHashCode();
+			result = 37 * result + ret;
+			ret = Acl.GetHashCode();
+			result = 37 * result + ret;
+			ret = (int) Flags;
+			result = 37 * result + ret;
+			return result;
+		}
+		public static string Signature ()
+		{
+			return "LCreateRequest(sB[LACL(iLId(ss))]i)";
+		}
+	}
 }

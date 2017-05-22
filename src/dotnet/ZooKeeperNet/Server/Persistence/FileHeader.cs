@@ -20,115 +20,128 @@
 using System;
 using System.Linq;
 using ZooKeeperNet.Jute;
-using NLog;
+using ZooKeeperNet.Log;
 
 namespace ZooKeeperNet.Server.Persistence
 {
-public class FileHeader : IRecord, IComparable 
-{
-private static Logger log = LogManager.GetLogger(nameof(FileHeader));
-  public FileHeader() {
-  }
-  public FileHeader(
-  int magic
-,
-  int version
-,
-  long dbid
-) {
-Magic=magic;
-Version=version;
-Dbid=dbid;
-  }
-  public int Magic { get; set; } 
-  public int Version { get; set; } 
-  public long Dbid { get; set; } 
-  public void Serialize(IOutputArchive a_, String tag) {
-    a_.StartRecord(this,tag);
-    a_.WriteInt(Magic,"magic");
-    a_.WriteInt(Version,"version");
-    a_.WriteLong(Dbid,"dbid");
-    a_.EndRecord(this,tag);
-  }
-  public void Deserialize(IInputArchive a_, String tag) {
-    a_.StartRecord(tag);
-    Magic=a_.ReadInt("magic");
-    Version=a_.ReadInt("version");
-    Dbid=a_.ReadLong("dbid");
-    a_.EndRecord(tag);
-}
-  public override String ToString() {
-    try {
-      System.IO.MemoryStream ms = new System.IO.MemoryStream();
-      using(ZooKeeperNet.IO.EndianBinaryWriter writer =
-        new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8)){
-      BinaryOutputArchive a_ = 
-        new BinaryOutputArchive(writer);
-      a_.StartRecord(this,string.Empty);
-    a_.WriteInt(Magic,"magic");
-    a_.WriteInt(Version,"version");
-    a_.WriteLong(Dbid,"dbid");
-      a_.EndRecord(this,string.Empty);
-      ms.Position = 0;
-      return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-    }    } catch (Exception ex) {
-      log.Error(ex);
-    }
-    return "ERROR";
-  }
-  public void Write(ZooKeeperNet.IO.EndianBinaryWriter writer) {
-    BinaryOutputArchive archive = new BinaryOutputArchive(writer);
-    Serialize(archive, string.Empty);
-  }
-  public void ReadFields(ZooKeeperNet.IO.EndianBinaryReader reader) {
-    BinaryInputArchive archive = new BinaryInputArchive(reader);
-    Deserialize(archive, string.Empty);
-  }
-  public int CompareTo (object obj) {
-    FileHeader peer = (FileHeader) obj;
-    if (peer == null) {
-      throw new InvalidOperationException("Comparing different types of records.");
-    }
-    int ret = 0;
-    ret = (Magic == peer.Magic)? 0 :((Magic<peer.Magic)?-1:1);
-    if (ret != 0) return ret;
-    ret = (Version == peer.Version)? 0 :((Version<peer.Version)?-1:1);
-    if (ret != 0) return ret;
-    ret = (Dbid == peer.Dbid)? 0 :((Dbid<peer.Dbid)?-1:1);
-    if (ret != 0) return ret;
-     return ret;
-  }
-  public override bool Equals(object obj) {
- FileHeader peer = (FileHeader) obj;
-    if (peer == null) {
-      return false;
-    }
-    if (Object.ReferenceEquals(peer,this)) {
-      return true;
-    }
-    bool ret = false;
-    ret = (Magic==peer.Magic);
-    if (!ret) return ret;
-    ret = (Version==peer.Version);
-    if (!ret) return ret;
-    ret = (Dbid==peer.Dbid);
-    if (!ret) return ret;
-     return ret;
-  }
-  public override int GetHashCode() {
-    int result = 17;
-    int ret = GetType().GetHashCode();
-    result = 37*result + ret;
-    ret = (int)Magic;
-    result = 37*result + ret;
-    ret = (int)Version;
-    result = 37*result + ret;
-    ret = (int)Dbid;
-    result = 37*result + ret;
-    return result;
-  }
-  public static string Signature() {
-    return "LFileHeader(iil)";
-  }
-}
+	public class FileHeader : IRecord, IComparable
+	{
+		private static readonly ILogProducer log = TypeLogger<FileHeader>.Instance;
+		public FileHeader ()
+		{
+		}
+		public FileHeader (int magic, int version, long dbid)
+		{
+			Magic = magic;
+			Version = version;
+			Dbid = dbid;
+		}
+		public int Magic { get; set; }
+		public int Version { get; set; }
+		public long Dbid { get; set; }
+		public void Serialize (IOutputArchive a_, String tag)
+		{
+			a_.StartRecord(this, tag);
+			a_.WriteInt(Magic, "magic");
+			a_.WriteInt(Version, "version");
+			a_.WriteLong(Dbid, "dbid");
+			a_.EndRecord(this, tag);
+		}
+		public void Deserialize (IInputArchive a_, String tag)
+		{
+			a_.StartRecord(tag);
+			Magic = a_.ReadInt("magic");
+			Version = a_.ReadInt("version");
+			Dbid = a_.ReadLong("dbid");
+			a_.EndRecord(tag);
+		}
+		public override String ToString ()
+		{
+			try
+			{
+				System.IO.MemoryStream ms = new System.IO.MemoryStream();
+				using (ZooKeeperNet.IO.EndianBinaryWriter writer =
+				  new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8))
+				{
+					BinaryOutputArchive a_ =
+					  new BinaryOutputArchive(writer);
+					a_.StartRecord(this, string.Empty);
+					a_.WriteInt(Magic, "magic");
+					a_.WriteInt(Version, "version");
+					a_.WriteLong(Dbid, "dbid");
+					a_.EndRecord(this, string.Empty);
+					ms.Position = 0;
+					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Error(ex);
+			}
+			return "ERROR";
+		}
+		public void Write (ZooKeeperNet.IO.EndianBinaryWriter writer)
+		{
+			BinaryOutputArchive archive = new BinaryOutputArchive(writer);
+			Serialize(archive, string.Empty);
+		}
+		public void ReadFields (ZooKeeperNet.IO.EndianBinaryReader reader)
+		{
+			BinaryInputArchive archive = new BinaryInputArchive(reader);
+			Deserialize(archive, string.Empty);
+		}
+		public int CompareTo (object obj)
+		{
+			FileHeader peer = (FileHeader) obj;
+			if (peer == null)
+			{
+				throw new InvalidOperationException("Comparing different types of records.");
+			}
+			int ret = 0;
+			ret = (Magic == peer.Magic) ? 0 : ((Magic < peer.Magic) ? -1 : 1);
+			if (ret != 0) return ret;
+			ret = (Version == peer.Version) ? 0 : ((Version < peer.Version) ? -1 : 1);
+			if (ret != 0) return ret;
+			ret = (Dbid == peer.Dbid) ? 0 : ((Dbid < peer.Dbid) ? -1 : 1);
+			if (ret != 0) return ret;
+			return ret;
+		}
+		public override bool Equals (object obj)
+		{
+			FileHeader peer = (FileHeader) obj;
+			if (peer == null)
+			{
+				return false;
+			}
+			if (Object.ReferenceEquals(peer, this))
+			{
+				return true;
+			}
+			bool ret = false;
+			ret = (Magic == peer.Magic);
+			if (!ret) return ret;
+			ret = (Version == peer.Version);
+			if (!ret) return ret;
+			ret = (Dbid == peer.Dbid);
+			if (!ret) return ret;
+			return ret;
+		}
+		public override int GetHashCode ()
+		{
+			int result = 17;
+			int ret = GetType().GetHashCode();
+			result = 37 * result + ret;
+			ret = (int) Magic;
+			result = 37 * result + ret;
+			ret = (int) Version;
+			result = 37 * result + ret;
+			ret = (int) Dbid;
+			result = 37 * result + ret;
+			return result;
+		}
+		public static string Signature ()
+		{
+			return "LFileHeader(iil)";
+		}
+	}
 }

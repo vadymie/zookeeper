@@ -20,7 +20,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using NLog;
+    using ZooKeeperNet.Log;
     using ZooKeeperNet.Jute;
     using ZooKeeperNet.Data;
     using System.Text;
@@ -29,9 +29,9 @@
 
     public class DataTree
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(DataTree));
+		private static readonly ILogProducer LOG = TypeLogger<DataTree>.Instance;
 
-        private readonly Dictionary<string, DataNode> nodes = new Dictionary<string, DataNode>();
+		private readonly Dictionary<string, DataNode> nodes = new Dictionary<string, DataNode>();
 
         //private ZKWatchManager dataWatches = new ZKWatchManager();
 

@@ -20,15 +20,15 @@
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
-	using NLog;
+	using ZooKeeperNet.Log;
     using System.Text;
     using System.Collections.Generic;
 
     public class ClientConnectionEventConsumer : IStartable, IDisposable
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(ClientConnectionEventConsumer));
+		private static readonly ILogProducer LOG = TypeLogger<ClientConnectionEventConsumer>.Instance;
 
-        private readonly ClientConnection conn;
+		private readonly ClientConnection conn;
         private readonly Thread eventThread;
         //ConcurrentQueue gives us the non-blocking way of processing, it reduced the contention so much
         internal readonly BlockingCollection<ClientConnection.WatcherSetEventPair> waitingEvents = new BlockingCollection<ClientConnection.WatcherSetEventPair>();

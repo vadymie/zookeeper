@@ -20,103 +20,118 @@
 using System;
 using System.Linq;
 using ZooKeeperNet.Jute;
-using NLog;
+using ZooKeeperNet.Log;
 
 namespace ZooKeeperNet.Proto
 {
-public class GetDataResponse : IRecord, IComparable 
-{
-private static Logger log = LogManager.GetLogger(nameof(GetDataResponse));
-  public GetDataResponse() {
-  }
-  public GetDataResponse(
-  byte[] data
-,
-  ZooKeeperNet.Data.Stat stat
-) {
-Data=data;
-Stat=stat;
-  }
-  public byte[] Data { get; set; } 
-  public ZooKeeperNet.Data.Stat Stat { get; set; } 
-  public void Serialize(IOutputArchive a_, String tag) {
-    a_.StartRecord(this,tag);
-    a_.WriteBuffer(Data,"data");
-    a_.WriteRecord(Stat,"stat");
-    a_.EndRecord(this,tag);
-  }
-  public void Deserialize(IInputArchive a_, String tag) {
-    a_.StartRecord(tag);
-    Data=a_.ReadBuffer("data");
-    Stat= new ZooKeeperNet.Data.Stat();
-    a_.ReadRecord(Stat,"stat");
-    a_.EndRecord(tag);
-}
-  public override String ToString() {
-    try {
-      System.IO.MemoryStream ms = new System.IO.MemoryStream();
-      using(ZooKeeperNet.IO.EndianBinaryWriter writer =
-        new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8)){
-      BinaryOutputArchive a_ = 
-        new BinaryOutputArchive(writer);
-      a_.StartRecord(this,string.Empty);
-    a_.WriteBuffer(Data,"data");
-    a_.WriteRecord(Stat,"stat");
-      a_.EndRecord(this,string.Empty);
-      ms.Position = 0;
-      return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-    }    } catch (Exception ex) {
-      log.Error(ex);
-    }
-    return "ERROR";
-  }
-  public void Write(ZooKeeperNet.IO.EndianBinaryWriter writer) {
-    BinaryOutputArchive archive = new BinaryOutputArchive(writer);
-    Serialize(archive, string.Empty);
-  }
-  public void ReadFields(ZooKeeperNet.IO.EndianBinaryReader reader) {
-    BinaryInputArchive archive = new BinaryInputArchive(reader);
-    Deserialize(archive, string.Empty);
-  }
-  public int CompareTo (object obj) {
-    GetDataResponse peer = (GetDataResponse) obj;
-    if (peer == null) {
-      throw new InvalidOperationException("Comparing different types of records.");
-    }
-    int ret = 0;
-    ret = Data.CompareTo(peer.Data);
-    if (ret != 0) return ret;
-    ret = Stat.CompareTo(peer.Stat);
-    if (ret != 0) return ret;
-     return ret;
-  }
-  public override bool Equals(object obj) {
- GetDataResponse peer = (GetDataResponse) obj;
-    if (peer == null) {
-      return false;
-    }
-    if (Object.ReferenceEquals(peer,this)) {
-      return true;
-    }
-    bool ret = false;
-    ret = Data.Equals(peer.Data);
-    if (!ret) return ret;
-    ret = Stat.Equals(peer.Stat);
-    if (!ret) return ret;
-     return ret;
-  }
-  public override int GetHashCode() {
-    int result = 17;
-    int ret = GetType().GetHashCode();
-    result = 37*result + ret;
-    ret = Data.GetHashCode();
-    result = 37*result + ret;
-    ret = Stat.GetHashCode();
-    result = 37*result + ret;
-    return result;
-  }
-  public static string Signature() {
-    return "LGetDataResponse(BLStat(lllliiiliil))";
-  }
-}
+	public class GetDataResponse : IRecord, IComparable
+	{
+		private static readonly ILogProducer log = TypeLogger<GetDataResponse>.Instance;
+		public GetDataResponse ()
+		{
+		}
+		public GetDataResponse (byte[] data, ZooKeeperNet.Data.Stat stat)
+		{
+			Data = data;
+			Stat = stat;
+		}
+		public byte[] Data { get; set; }
+		public ZooKeeperNet.Data.Stat Stat { get; set; }
+		public void Serialize (IOutputArchive a_, String tag)
+		{
+			a_.StartRecord(this, tag);
+			a_.WriteBuffer(Data, "data");
+			a_.WriteRecord(Stat, "stat");
+			a_.EndRecord(this, tag);
+		}
+		public void Deserialize (IInputArchive a_, String tag)
+		{
+			a_.StartRecord(tag);
+			Data = a_.ReadBuffer("data");
+			Stat = new ZooKeeperNet.Data.Stat();
+			a_.ReadRecord(Stat, "stat");
+			a_.EndRecord(tag);
+		}
+		public override String ToString ()
+		{
+			try
+			{
+				System.IO.MemoryStream ms = new System.IO.MemoryStream();
+				using (ZooKeeperNet.IO.EndianBinaryWriter writer =
+				  new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8))
+				{
+					BinaryOutputArchive a_ =
+					  new BinaryOutputArchive(writer);
+					a_.StartRecord(this, string.Empty);
+					a_.WriteBuffer(Data, "data");
+					a_.WriteRecord(Stat, "stat");
+					a_.EndRecord(this, string.Empty);
+					ms.Position = 0;
+					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Error(ex);
+			}
+			return "ERROR";
+		}
+		public void Write (ZooKeeperNet.IO.EndianBinaryWriter writer)
+		{
+			BinaryOutputArchive archive = new BinaryOutputArchive(writer);
+			Serialize(archive, string.Empty);
+		}
+		public void ReadFields (ZooKeeperNet.IO.EndianBinaryReader reader)
+		{
+			BinaryInputArchive archive = new BinaryInputArchive(reader);
+			Deserialize(archive, string.Empty);
+		}
+		public int CompareTo (object obj)
+		{
+			GetDataResponse peer = (GetDataResponse) obj;
+			if (peer == null)
+			{
+				throw new InvalidOperationException("Comparing different types of records.");
+			}
+			int ret = 0;
+			ret = Data.CompareTo(peer.Data);
+			if (ret != 0) return ret;
+			ret = Stat.CompareTo(peer.Stat);
+			if (ret != 0) return ret;
+			return ret;
+		}
+		public override bool Equals (object obj)
+		{
+			GetDataResponse peer = (GetDataResponse) obj;
+			if (peer == null)
+			{
+				return false;
+			}
+			if (Object.ReferenceEquals(peer, this))
+			{
+				return true;
+			}
+			bool ret = false;
+			ret = Data.Equals(peer.Data);
+			if (!ret) return ret;
+			ret = Stat.Equals(peer.Stat);
+			if (!ret) return ret;
+			return ret;
+		}
+		public override int GetHashCode ()
+		{
+			int result = 17;
+			int ret = GetType().GetHashCode();
+			result = 37 * result + ret;
+			ret = Data.GetHashCode();
+			result = 37 * result + ret;
+			ret = Stat.GetHashCode();
+			result = 37 * result + ret;
+			return result;
+		}
+		public static string Signature ()
+		{
+			return "LGetDataResponse(BLStat(lllliiiliil))";
+		}
+	}
 }

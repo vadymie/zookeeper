@@ -21,8 +21,8 @@ namespace ZooKeeperNet.Tests
     using System.Net;
     using System.Threading;
     using System.Collections.Generic;
-    using NLog;
-    using NUnit.Framework;
+	using NLog;
+	using NUnit.Framework;
     using ZooKeeperNet.Data;
 
     [TestFixture]

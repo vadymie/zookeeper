@@ -16,20 +16,18 @@
  *
  */
 ﻿using System.Collections.Generic;
-﻿using NLog;
-
+﻿
 namespace ZooKeeperNet
 {
-    using System;
-    using System.Text;
-    using System.Threading;
-    using System.Linq;
+	using System;
+	using System.Text;
+	using System.Threading;
+	using System.Linq;
+	using ZooKeeperNet.Log;
 
-    public static class ZooKeeperEx
+	public static class ZooKeeperEx
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(ZooKeeperEx));
-
-        public static TValue GetAndRemove<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+		public static TValue GetAndRemove<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
         {
             TValue value;
             if (dictionary.TryGetValue(key, out value))
@@ -52,56 +50,12 @@ namespace ZooKeeperNet
             return Encoding.UTF8.GetBytes(@string);
         }
 
-        public static IDisposable AcquireReadLock(this ReaderWriterLockSlim @lock)
-        {
-            @lock.EnterReadLock();
-            return new Disposable(@lock.ExitReadLock);
-        }
-
-        public static IDisposable AcquireUpgradableReadLock(this ReaderWriterLockSlim @lock)
-        {
-            @lock.EnterUpgradeableReadLock();
-            return new Disposable(@lock.ExitUpgradeableReadLock);
-        }
-
-        public static IDisposable AcquireWriteLock(this ReaderWriterLockSlim @lock)
-        {
-            @lock.EnterWriteLock();
-            return new Disposable(@lock.ExitWriteLock);
-        }
-
         public static string Combine(this string parent, string child)
         {
             StringBuilder builder = new StringBuilder(parent)
             .Append(PathUtils.PathSeparator)
             .Append(child);
             return builder.ToString();
-        }
-
-        private struct Disposable : IDisposable
-        {
-            private readonly Action action;
-            private readonly Sentinel sentinel;
-
-            public Disposable(Action action)
-            {
-                this.action = action;
-                sentinel = new Sentinel();
-            }
-
-            public void Dispose()
-            {
-                try
-                {
-                    action();
-                    sentinel.Dispose();
-                }
-                catch (Exception ex)
-                {
-					LOG.Warn(string.Format("Error disposing {0} : {1}", this.GetType().FullName, ex.Message));
-                }
-                
-            }
         }
 
         private class Sentinel : IDisposable

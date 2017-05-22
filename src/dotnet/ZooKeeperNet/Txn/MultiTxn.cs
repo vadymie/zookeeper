@@ -20,108 +20,133 @@
 using System;
 using System.Linq;
 using ZooKeeperNet.Jute;
-using NLog;
+using ZooKeeperNet.Log;
 
 namespace ZooKeeperNet.Txn
 {
-public class MultiTxn : IRecord, IComparable 
-{
-private static Logger log = LogManager.GetLogger(nameof(MultiTxn));
-  public MultiTxn() {
-  }
-  public MultiTxn(
-  System.Collections.Generic.IEnumerable<ZooKeeperNet.Txn.Txn> txns
-) {
-Txns=txns;
-  }
-  public System.Collections.Generic.IEnumerable<ZooKeeperNet.Txn.Txn> Txns { get; set; } 
-  public void Serialize(IOutputArchive a_, String tag) {
-    a_.StartRecord(this,tag);
-    {
-      a_.StartVector(Txns,"txns");
-      if (Txns!= null) {          foreach(var e1 in Txns) {
-    a_.WriteRecord(e1,"e1");
-          }
-      }
-      a_.EndVector(Txns,"txns");
-    }
-    a_.EndRecord(this,tag);
-  }
-  public void Deserialize(IInputArchive a_, String tag) {
-    a_.StartRecord(tag);
-    {
-      IIndex vidx1 = a_.StartVector("txns");
-      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<ZooKeeperNet.Txn.Txn>();
-          for (; !vidx1.Done(); vidx1.Incr()) {
-    ZooKeeperNet.Txn.Txn e1;
-    e1= new ZooKeeperNet.Txn.Txn();
-    a_.ReadRecord(e1,"e1");
-            tmpLst.Add(e1);
-          }
-            Txns=tmpLst;
-      }
-    a_.EndVector("txns");
-    }
-    a_.EndRecord(tag);
-}
-  public override String ToString() {
-    try {
-      System.IO.MemoryStream ms = new System.IO.MemoryStream();
-      using(ZooKeeperNet.IO.EndianBinaryWriter writer =
-        new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8)){
-      BinaryOutputArchive a_ = 
-        new BinaryOutputArchive(writer);
-      a_.StartRecord(this,string.Empty);
-    {
-      a_.StartVector(Txns,"txns");
-      if (Txns!= null) {          foreach(var e1 in Txns) {
-    a_.WriteRecord(e1,"e1");
-          }
-      }
-      a_.EndVector(Txns,"txns");
-    }
-      a_.EndRecord(this,string.Empty);
-      ms.Position = 0;
-      return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-    }    } catch (Exception ex) {
-      log.Error(ex);
-    }
-    return "ERROR";
-  }
-  public void Write(ZooKeeperNet.IO.EndianBinaryWriter writer) {
-    BinaryOutputArchive archive = new BinaryOutputArchive(writer);
-    Serialize(archive, string.Empty);
-  }
-  public void ReadFields(ZooKeeperNet.IO.EndianBinaryReader reader) {
-    BinaryInputArchive archive = new BinaryInputArchive(reader);
-    Deserialize(archive, string.Empty);
-  }
-  public int CompareTo (object obj) {
-    throw new InvalidOperationException("comparing MultiTxn is unimplemented");
-  }
-  public override bool Equals(object obj) {
- MultiTxn peer = (MultiTxn) obj;
-    if (peer == null) {
-      return false;
-    }
-    if (Object.ReferenceEquals(peer,this)) {
-      return true;
-    }
-    bool ret = false;
-    ret = Txns.Equals(peer.Txns);
-    if (!ret) return ret;
-     return ret;
-  }
-  public override int GetHashCode() {
-    int result = 17;
-    int ret = GetType().GetHashCode();
-    result = 37*result + ret;
-    ret = Txns.GetHashCode();
-    result = 37*result + ret;
-    return result;
-  }
-  public static string Signature() {
-    return "LMultiTxn([LTxn(iB)])";
-  }
-}
+	public class MultiTxn : IRecord, IComparable
+	{
+		private static readonly ILogProducer log = TypeLogger<MultiTxn>.Instance;
+		public MultiTxn ()
+		{
+		}
+		public MultiTxn (System.Collections.Generic.IEnumerable<ZooKeeperNet.Txn.Txn> txns)
+		{
+			Txns = txns;
+		}
+		public System.Collections.Generic.IEnumerable<ZooKeeperNet.Txn.Txn> Txns { get; set; }
+		public void Serialize (IOutputArchive a_, String tag)
+		{
+			a_.StartRecord(this, tag);
+			{
+				a_.StartVector(Txns, "txns");
+				if (Txns != null)
+				{
+					foreach (var e1 in Txns)
+					{
+						a_.WriteRecord(e1, "e1");
+					}
+				}
+				a_.EndVector(Txns, "txns");
+			}
+			a_.EndRecord(this, tag);
+		}
+		public void Deserialize (IInputArchive a_, String tag)
+		{
+			a_.StartRecord(tag);
+			{
+				IIndex vidx1 = a_.StartVector("txns");
+				if (vidx1 != null)
+				{
+					var tmpLst = new System.Collections.Generic.List<ZooKeeperNet.Txn.Txn>();
+					for (; !vidx1.Done(); vidx1.Incr())
+					{
+						ZooKeeperNet.Txn.Txn e1;
+						e1 = new ZooKeeperNet.Txn.Txn();
+						a_.ReadRecord(e1, "e1");
+						tmpLst.Add(e1);
+					}
+					Txns = tmpLst;
+				}
+				a_.EndVector("txns");
+			}
+			a_.EndRecord(tag);
+		}
+		public override String ToString ()
+		{
+			try
+			{
+				System.IO.MemoryStream ms = new System.IO.MemoryStream();
+				using (ZooKeeperNet.IO.EndianBinaryWriter writer =
+				  new ZooKeeperNet.IO.EndianBinaryWriter(ZooKeeperNet.IO.EndianBitConverter.Big, ms, System.Text.Encoding.UTF8))
+				{
+					BinaryOutputArchive a_ =
+					  new BinaryOutputArchive(writer);
+					a_.StartRecord(this, string.Empty);
+					{
+						a_.StartVector(Txns, "txns");
+						if (Txns != null)
+						{
+							foreach (var e1 in Txns)
+							{
+								a_.WriteRecord(e1, "e1");
+							}
+						}
+						a_.EndVector(Txns, "txns");
+					}
+					a_.EndRecord(this, string.Empty);
+					ms.Position = 0;
+					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Error(ex);
+			}
+			return "ERROR";
+		}
+		public void Write (ZooKeeperNet.IO.EndianBinaryWriter writer)
+		{
+			BinaryOutputArchive archive = new BinaryOutputArchive(writer);
+			Serialize(archive, string.Empty);
+		}
+		public void ReadFields (ZooKeeperNet.IO.EndianBinaryReader reader)
+		{
+			BinaryInputArchive archive = new BinaryInputArchive(reader);
+			Deserialize(archive, string.Empty);
+		}
+		public int CompareTo (object obj)
+		{
+			throw new InvalidOperationException("comparing MultiTxn is unimplemented");
+		}
+		public override bool Equals (object obj)
+		{
+			MultiTxn peer = (MultiTxn) obj;
+			if (peer == null)
+			{
+				return false;
+			}
+			if (Object.ReferenceEquals(peer, this))
+			{
+				return true;
+			}
+			bool ret = false;
+			ret = Txns.Equals(peer.Txns);
+			if (!ret) return ret;
+			return ret;
+		}
+		public override int GetHashCode ()
+		{
+			int result = 17;
+			int ret = GetType().GetHashCode();
+			result = 37 * result + ret;
+			ret = Txns.GetHashCode();
+			result = 37 * result + ret;
+			return result;
+		}
+		public static string Signature ()
+		{
+			return "LMultiTxn([LTxn(iB)])";
+		}
+	}
 }

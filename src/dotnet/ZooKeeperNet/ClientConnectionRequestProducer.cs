@@ -11,15 +11,15 @@ namespace ZooKeeperNet
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;
-    using NLog;
+    using ZooKeeperNet.Log;
     using ZooKeeperNet.Jute;
     using ZooKeeperNet.Proto;
     using System.Collections.Generic;
     using System.Diagnostics;
     public class ClientConnectionRequestProducer : IStartable, IDisposable
     {
-        private static readonly Logger LOG = LogManager.GetLogger(nameof(ClientConnectionRequestProducer));
-        private const string RETRY_CONN_MSG = ", closing socket connection and attempting reconnect";
+		private static readonly ILogProducer LOG = TypeLogger<ClientConnectionRequestProducer>.Instance;
+		private const string RETRY_CONN_MSG = ", closing socket connection and attempting reconnect";
 
         private readonly ClientConnection conn;
         private readonly ZooKeeper zooKeeper;
